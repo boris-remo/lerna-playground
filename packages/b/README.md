@@ -9,3 +9,4 @@ const b = require('b');
 
 // TODO: DEMONSTRATE API
 ```
+b
