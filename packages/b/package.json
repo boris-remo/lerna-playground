@@ -18,7 +18,7 @@
     "url": "git+https://github.com/boris-remo/lerna-playground.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Package B tests\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
