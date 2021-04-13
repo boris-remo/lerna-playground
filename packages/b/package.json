@@ -1,5 +1,5 @@
 {
-  "name": "b",
+  "name": "@boris-remo/b",
   "version": "0.6.0",
   "description": "> TODO: description",
   "author": "Boris Yordanov <boris@remo.co>",
@@ -27,5 +27,5 @@
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
   },
-  "gitHead": "fcc1242b54b403f4a7bf843ab953fb3ed7f8c171"
+  "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b"
 }
