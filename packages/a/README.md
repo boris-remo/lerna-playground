@@ -9,3 +9,5 @@ const a = require('a');
 
 // TODO: DEMONSTRATE API
 ```
+
+a
