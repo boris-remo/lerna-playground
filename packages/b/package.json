@@ -18,10 +18,14 @@
     "url": "git+https://github.com/boris-remo/lerna-playground.git",
     "directory": "packages/b"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "test": "echo \"Package B tests\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
-  }
+  },
+  "gitHead": "5e85a51d553bd027845131306878080e7a628359"
 }
