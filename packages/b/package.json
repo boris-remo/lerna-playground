@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
   },
-  "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b"
+  "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b",
+  "dependencies": {
+    "react": "^17.0.2"
+  }
 }
