@@ -15,7 +15,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/boris-remo/lerna-playground.git"
+    "url": "git+https://github.com/boris-remo/lerna-playground.git",
+    "directory": "packages/b"
   },
   "scripts": {
     "test": "echo \"Package B tests\" && exit 1"
