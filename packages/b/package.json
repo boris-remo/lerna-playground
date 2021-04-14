@@ -22,7 +22,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "test": "echo \"Package B tests\" && exit 0"
+    "test": "echo \"Package B tests\" && exit 1",
+    "lint": "eslint ."
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
@@ -31,5 +32,9 @@
   "dependencies": {
     "@boris-remo/a": "^0.7.0",
     "classnames": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.23.2"
   }
 }
