@@ -22,10 +22,13 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "test": "echo \"Package A tests\" && exit 1"
+    "test": "echo \"Package A tests\" && exit 0"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
   },
-  "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b"
+  "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b",
+  "dependencies": {
+    "classnames": "2.2.0"
+  }
 }
