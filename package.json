@@ -5,7 +5,5 @@
     "packages/a",
     "packages/b"
   ],
-  "devDependencies": {
-    "lerna": "^4.0.0"
-  }
+  "devDependencies": {}
 }
