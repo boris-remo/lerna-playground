@@ -11,7 +11,7 @@ jobs:
         id: setup
         run: |
           echo labels
-          echo ${{github.event.pull_request.labels.*.name}}
+          echo ${{toJson(github.event.pull_request.labels.*.name)}}
           if contains(${{github.event.pull_request.labels.*.name}}, 'QA Rejected');
           then
               echo "::set-output name=worksheetTitle::rejected"
