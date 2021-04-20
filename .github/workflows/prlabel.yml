@@ -47,6 +47,9 @@ jobs:
         if: ${{ steps.approved.outputs.triggered == 'true' }}
         with:
           labels: 'QA Approved'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
   record_rejection:
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request }}
@@ -89,3 +92,5 @@ jobs:
         if: ${{ steps.rejected.outputs.triggered == 'true' }}
         with:
           labels: 'QA Rejected'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
