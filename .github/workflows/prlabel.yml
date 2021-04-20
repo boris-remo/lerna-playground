@@ -7,28 +7,15 @@ jobs:
   record-rejection:
     runs-on: ubuntu-latest
     steps:
-      - name: setup
-        id: setup
-        run: |
-          echo labels
-          echo ${{toJson(github.event.pull_request.labels.*.name)}}
-          if contains(${{github.event.pull_request.labels.*.name}}, 'QA Rejected');
-          then
-              echo "::set-output name=worksheetTitle::rejected"
-          elif contains(${{github.event.pull_request.labels.*.name}}, 'Ready for QA');
-          then
-              echo "::set-output name=worksheetTitle::reviewed"
-          fi
-
-      - name: record
-        if: steps.setup.outputs.worksheetTitle
-        uses: jroehl/gsheet.action@v1.0.0
+      - uses: jroehl/gsheet.action@v1.0.0
+        if: contains(github.event.pull_request.labels.*.name, 'QA Rejected') || contains(github.event.pull_request.labels.*.name, 'Ready for QA')
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
-          worksheetTitle: steps.setup.outputs.worksheetTitle
+          worksheetTitle: ${{ contains(github.event.pull_request.labels.*.name, 'QA Rejected') ? 'rejected' :'reviewed' }}
+
           commands: |
             [
               {
@@ -47,3 +34,9 @@ jobs:
                 }
               }
             ]
+
+      - name: dump results
+        env:
+          #  the output of the action can be found in ${{ steps.update_worksheet.outputs.results }}
+          RESULTS: ${{ steps.update_worksheet.outputs.results }}
+        run: echo "$RESULTS" | jq
