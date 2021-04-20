@@ -5,7 +5,10 @@
     "packages/a",
     "packages/b"
   ],
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.23.2"
+  },
   "scripts": {
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces"

@@ -31,9 +31,5 @@
   "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b",
   "dependencies": {
     "classnames": "2.2.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.24.0",
-    "eslint-plugin-react": "^7.23.2"
   }
 }
