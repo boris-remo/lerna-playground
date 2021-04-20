@@ -1,7 +1,5 @@
 name: Record rejected PRs
 on:
-  pull_request:
-    branches: [master]
   issue_comment:
     types: [created]
 jobs:
@@ -15,8 +13,10 @@ jobs:
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
       - name: Get result
         run: echo "${{steps.approved.outputs.triggered}}"
+
       - id: 'record-approval'
         if: steps.approved.outputs.triggered == 'true'
         uses: jroehl/gsheet.action@v1.0.0
