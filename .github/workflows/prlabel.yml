@@ -3,31 +3,49 @@ on:
   issue_comment:
     types: [created]
 jobs:
-  pr_commented:
-    # This job only runs for pull request comments
-    name: PR comment
-    if: ${{ github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Comment on PR #${{ github.event.issue.number }}"
   record_approval:
     runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
     steps:
       - uses: khan/pull-request-comment-trigger@master
         id: approved
         with:
           trigger: '@qa-approved'
-          reaction: rocket
+          reaction: '+1'
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: Get result
-        run: echo "${{github.event.issue}}"
+      - uses: khan/pull-request-comment-trigger@master
+        id: rejected
+        with:
+          trigger: '@qa-rejected'
+          reaction: '+1'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - uses: actions/github-script@v3
+        id: worksheet
+        if: steps.approved.outputs.triggered == 'true' || steps.rejected.outputs.triggered == 'true'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            console.log('approved', steps.approved.outputs.triggered)
+            console.log('rejected', steps.rejected.outputs.triggered)
+            if (steps.approved.outputs.triggered) {
+              return 'rejected'
+            }
+            if (steps.rejected.outputs.triggered) {
+              return 'reviewed'
+            }
+          result-encoding: string
 
       - id: 'record_approval'
-        if: steps.approved.outputs.triggered == 'true'
+        if: steps.worksheet.outputs.result
         uses: jroehl/gsheet.action@v1.0.0
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
           commands: |
@@ -44,15 +62,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": "approved"
+                  "worksheetTitle": ${{steps.worksheet.outputs.result}}
                 }
               }
             ]
-        env:
-          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
-          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
-      - name: dump results
-        env:
-          #  the output of the action can be found in ${{ steps.update_worksheet.outputs.results }}
-          RESULTS: ${{ steps.record_approval.outputs.results }}
-        run: echo "$RESULTS" | jq
