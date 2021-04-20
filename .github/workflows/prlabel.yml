@@ -7,38 +7,11 @@ jobs:
   record-rejection:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v3
-        id: worksheet
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const allowedLabels = ['QA Rejected', 'Ready for QA']
-            console.log('label', context.payload.pull_request.labels)
-            if (context.payload.pull_request.labels.find(({name}) => name === 'QA Rejected')) {
-              return 'rejected'
-            }
-            if (context.payload.pull_request.labels.find(({name}) => name === 'Ready for QA')) {
-              return 'reviewed'
-            }
-          result-encoding: string
-
-      - uses: actions/github-script@v3
-        id: test
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            console.log('test', steps.worksheet.outputs.result)
-
-      - uses: jroehl/gsheet.action@v1.0.0
-        if: ${{ steps.worksheet.outputs.result == 'rejected' || steps.worksheet.outputs.result == 'reviewed'}}
-        env:
-          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
-          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+      - if: contains( github.event.pull_request.labels.*.name, 'QA Rejected')
+        uses: jroehl/gsheet.action@v1.0.0
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
-
           commands: |
-
             [
               {
                 "command": "appendData",
@@ -52,13 +25,35 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": "${{ steps.worksheet.outputs.result }}"
+                  "worksheetTitle": "rejected"
                 }
               }
             ]
-
-      - name: dump results
         env:
-          #  the output of the action can be found in ${{ steps.update_worksheet.outputs.results }}
-          RESULTS: ${{ steps.update_worksheet.outputs.results }}
-        run: echo "$RESULTS" | jq
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+      - if: contains(github.event.pull_request.labels.*.name, 'Ready for QA')
+        uses: jroehl/gsheet.action@v1.0.0
+        with:
+          spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
+          commands: |
+            [
+              {
+                "command": "appendData",
+                "args": {
+                  "data": [
+                    [
+                      "${{ github.event.pull_request.title }}",
+                      "${{ github.event.pull_request.number }}",
+                      "${{ github.event.pull_request.updated_at }}"
+                      "${{ github.event.pull_request.html_url }}",
+                    ]
+                  ],
+                  "minCol": 1,
+                  "worksheetTitle": "reviewed"
+                }
+              }
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
