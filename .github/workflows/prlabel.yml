@@ -17,7 +17,12 @@ jobs:
               { "command": 
                   "updateData", 
                   "args": { 
-                    "data": [["A1", "A2", "A3"]],
+                    "data": [[
+                      ${{ "github.event.pull_request.number" }},
+                      ${{ "github.event.pull_request.pull_request.title" }},
+                      ${{ "github.event.pull_request.pull_request.html_url"}},
+                      ${{ "github.event.pull_request.pull_request.updated_at"}}
+                    ]],
                     "worksheetTitle": "data"
                   }
               }
