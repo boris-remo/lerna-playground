@@ -7,14 +7,21 @@ jobs:
   record-rejection:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/github-script@v3
+        id: worksheet
+        with:
+          script: |
+            console.log(github.event.pull_request.labels.*.name)           
+            return "Hello!"
+          result-encoding: string
       - uses: jroehl/gsheet.action@v1.0.0
-        if: contains(github.event.pull_request.labels.*.name, 'QA Rejected') || contains(github.event.pull_request.labels.*.name, 'Ready for QA')
+        if: steps.worksheet.outputs.result
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
-          worksheetTitle: ${{ contains(github.event.pull_request.labels.*.name, 'QA Rejected') ? 'rejected' :'reviewed' }}
+          worksheetTitle: steps.worksheet.outputs.result
 
           commands: |
             [
