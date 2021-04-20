@@ -1,7 +1,9 @@
 name: Record rejected PRs
+
 on:
   issue_comment:
     types: [created]
+
 jobs:
   record_approval:
     runs-on: ubuntu-latest
@@ -38,10 +40,11 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": approved
+                  "worksheetTitle": "approved"
                 }
               }
             ]
+
   record_rejection:
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request }}
@@ -77,7 +80,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": rejected
+                  "worksheetTitle": "rejected"
                 }
               }
             ]
