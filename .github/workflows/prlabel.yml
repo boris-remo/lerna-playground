@@ -15,7 +15,7 @@ jobs:
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - id: 'record approval'
+      - id: 'record-approval'
         if: steps.approved.outputs.triggered == 'true'
         uses: jroehl/gsheet.action@v1.0.0
         with:
