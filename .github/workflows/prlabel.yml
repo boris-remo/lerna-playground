@@ -14,17 +14,19 @@ jobs:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
           commands: |
             [
-              { "command": 
-                  "updateData", 
-                  "args": { 
-                    "data": [[
+              {
+                "command": "updateData",
+                "args": {
+                  "data": [
+                    [
                       "${{ github.event.pull_request.number }}",
                       "${{ github.event.pull_request.pull_request.title }}",
-                      "${{ github.event.pull_request.pull_request.html_url}}",
-                      "${{ github.event.pull_request.pull_request.updated_at}}"
-                    ]],
-                    "worksheetTitle": "data"
-                  }
+                      "${{ github.event.pull_request.pull_request.html_url }}",
+                      "${{ github.event.pull_request.pull_request.updated_at }}"
+                    ]
+                  ],
+                  "worksheetTitle": "data"
+                }
               }
             ]
         env:
