@@ -4,14 +4,29 @@ on:
     types: [labeled]
 
 jobs:
-  fetch:
+  record-rejection:
     runs-on: ubuntu-latest
     steps:
-      - id: 'update_worksheet'
-        if: contains( github.event.pull_request.labels.*.name, 'Rejected')
-        uses: jroehl/gsheet.action@v1.0.0 # you can specify '@release' to always have the latest changes
+      - name: setup
+        id: setup
+        run: |
+          if contains(github.event.pull_request.labels.*.name, 'QA Rejected');
+          then
+              echo "::set-output name=worksheetTitle::rejected"
+          elif contains(github.event.pull_request.labels.*.name, 'Ready for QA');
+          then
+              echo "::set-output name=worksheetTitle::reviewed"
+          fi
+
+      - name: record
+        if: steps.setup.outputs.worksheetTitle
+        uses: jroehl/gsheet.action@v1.0.0
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
+          worksheetTitle: steps.setup.outputs.worksheetTitle
           commands: |
             [
               {
@@ -19,10 +34,10 @@ jobs:
                 "args": {
                   "data": [
                     [
-                      "${{ github.event.pull_request.number }}",
                       "${{ github.event.pull_request.title }}",
-                      "${{ github.event.pull_request.html_url }}",
+                      "${{ github.event.pull_request.number }}",
                       "${{ github.event.pull_request.updated_at }}"
+                      "${{ github.event.pull_request.html_url }}",
                     ]
                   ],
                   "minCol": 1,
@@ -30,11 +45,3 @@ jobs:
                 }
               }
             ]
-        env:
-          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
-          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
-      - name: dump results
-        env:
-          #  the output of the action can be found in ${{ steps.update_worksheet.outputs.results }}
-          RESULTS: ${{ steps.update_worksheet.outputs.results }}
-        run: echo "$RESULTS" | jq
