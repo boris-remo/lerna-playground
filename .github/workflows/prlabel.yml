@@ -62,7 +62,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": ${{steps.worksheet.outputs.result}}
+                  "worksheetTitle": ${{ steps.worksheet.outputs.result }}
                 }
               }
             ]
