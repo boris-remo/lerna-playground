@@ -9,13 +9,11 @@ jobs:
     steps:
       - uses: actions/github-script@v3
         id: worksheet
-        env:
-          labels: github.event.pull_request.labels
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            console.log('label', context.pull_request.labels)
             console.log('context', context)
-            console.log('labels', process.env)           
             return "Hello!"
           result-encoding: string
       - uses: jroehl/gsheet.action@v1.0.0
