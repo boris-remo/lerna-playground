@@ -22,7 +22,7 @@ jobs:
             }
           result-encoding: string
       - uses: jroehl/gsheet.action@v1.0.0
-        if: steps.worksheet.outputs.result
+        if: ${{ steps.worksheet.outputs.result !== undefined }}
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
