@@ -1,0 +1,32 @@
+name: Record rejected PRs
+on:
+  pull_request:
+    types: [synchronize]
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - id: 'update_worksheet'
+        if: contains( github.event.pull_request.labels.*.name, 'Rejected')
+        uses: jroehl/gsheet.action@v1.0.0 # you can specify '@release' to always have the latest changes
+        with:
+          spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
+          commands: |
+            [
+              { "command": 
+                  "updateData", 
+                  "args": { 
+                    "data": [["A1", "A2", "A3"]],
+                    "worksheetTitle": "data"
+                  }
+              }
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+      - name: dump results
+        env:
+          #  the output of the action can be found in ${{ steps.update_worksheet.outputs.results }}
+          RESULTS: ${{ steps.update_worksheet.outputs.results }}
+        run: echo "$RESULTS" | jq
