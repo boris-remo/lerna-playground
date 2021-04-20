@@ -21,6 +21,14 @@ jobs:
               return 'reviewed'
             }
           result-encoding: string
+
+      - uses: actions/github-script@v3
+        id: test
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            console.log('test', steps.worksheet.outputs.result)
+
       - uses: jroehl/gsheet.action@v1.0.0
         if: ${{ steps.worksheet.outputs.result == 'rejected' || steps.worksheet.outputs.result == 'reviewed'}}
         env:
@@ -30,6 +38,7 @@ jobs:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
 
           commands: |
+
             [
               {
                 "command": "appendData",
