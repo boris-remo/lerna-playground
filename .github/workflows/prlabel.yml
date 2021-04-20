@@ -10,7 +10,7 @@ jobs:
       - uses: actions/github-script@v3
         id: worksheet
         env:
-          labels: ${{ github.event.pull_request.labels }}
+          labels: github.event.pull_request.labels
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
