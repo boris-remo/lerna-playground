@@ -18,7 +18,7 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: 'record_approval'
-        if: steps.approved.outputs.triggered === 'true'
+        if: ${{ steps.approved.outputs.triggered === 'true' }}
         uses: jroehl/gsheet.action@v1.0.0
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
@@ -58,7 +58,7 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: 'record_rejection'
-        if: steps.rejected.outputs.triggered == 'true'
+        if: ${{ steps.rejected.outputs.triggered == 'true' }}
         uses: jroehl/gsheet.action@v1.0.0
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
