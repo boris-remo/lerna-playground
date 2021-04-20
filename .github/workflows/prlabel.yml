@@ -17,9 +17,8 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: 'record_approval'
+      - uses: jroehl/gsheet.action@v1.0.0
         if: ${{ steps.approved.outputs.triggered == 'true' }}
-        uses: jroehl/gsheet.action@v1.0.0
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
@@ -44,7 +43,10 @@ jobs:
                 }
               }
             ]
-
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.approved.outputs.triggered == 'true' }}
+        with:
+          labels: 'QA Approved'
   record_rejection:
     runs-on: ubuntu-latest
     if: ${{ github.event.issue.pull_request }}
@@ -57,9 +59,8 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: 'record_rejection'
+      - uses: jroehl/gsheet.action@v1.0.0
         if: ${{ steps.rejected.outputs.triggered == 'true' }}
-        uses: jroehl/gsheet.action@v1.0.0
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
@@ -84,3 +85,7 @@ jobs:
                 }
               }
             ]
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.rejected.outputs.triggered == 'true' }}
+        with:
+          labels: 'QA Rejected'
