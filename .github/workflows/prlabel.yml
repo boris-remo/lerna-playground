@@ -7,7 +7,8 @@ jobs:
   record-rejection:
     runs-on: ubuntu-latest
     steps:
-      - if: contains( github.event.pull_request.labels.*.name, 'QA Rejected')
+      - id: 'update_rejected'
+        if: contains( github.event.pull_request.labels.*.name, 'QA Rejected')
         uses: jroehl/gsheet.action@v1.0.0
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
@@ -32,7 +33,14 @@ jobs:
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
-      - if: contains(github.event.pull_request.labels.*.name, 'Ready for QA')
+      - name: dump results
+        env:
+          #  the output of the action can be found in ${{ steps.update_rejected.outputs.results }}
+          RESULTS: ${{ steps.update_rejected.outputs.results }}
+        run: echo "$RESULTS" | jq
+
+      - id: 'update_reviewed'
+        if: contains( github.event.pull_request.labels.*.name, 'Ready for QA')
         uses: jroehl/gsheet.action@v1.0.0
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
@@ -57,3 +65,8 @@ jobs:
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+      - name: dump results
+        env:
+          #  the output of the action can be found in ${{ steps.update_reviewed.outputs.results }}
+          RESULTS: ${{ steps.update_reviewed.outputs.results }}
+        run: echo "$RESULTS" | jq
