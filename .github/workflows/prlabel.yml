@@ -40,7 +40,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": approved
+                  "worksheetTitle": "approved"
                 }
               }
             ]
@@ -80,7 +80,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": rejected
+                  "worksheetTitle": "rejected"
                 }
               }
             ]
