@@ -37,10 +37,10 @@ jobs:
                 "args": {
                   "data": [
                     [
-                      "${{ github.event.issue.pull_request.title }}",
-                      "${{ github.event.issue.pull_request.number }}",
-                      "${{ github.event.issue.pull_request.updated_at }}",
-                      "${{ github.event.issue.pull_request.html_url }}"
+                      "${{ github.event.issue.title }}",
+                      "${{ github.event.issue.number }}",
+                      "${{ github.event.issue.updated_at }}",
+                      "${{ github.event.issue.html_url }}"
                     ]
                   ],
                   "minCol": 1,
