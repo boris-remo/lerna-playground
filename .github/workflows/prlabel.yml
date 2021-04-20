@@ -15,7 +15,7 @@ jobs:
           commands: |
             [
               {
-                "command": "updateData",
+                "command": "appendData",
                 "args": {
                   "data": [
                     [
