@@ -12,7 +12,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            console.log('label', context.pull_request.labels)
+            console.log('label', context.payload.pull_request.labels)
             console.log('context', context)
             return "Hello!"
           result-encoding: string
