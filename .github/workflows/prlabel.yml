@@ -12,9 +12,14 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const allowedLabels = ['QA Rejected', 'Ready for QA']
             console.log('label', context.payload.pull_request.labels)
-            console.log('context', context)
-            return "Hello!"
+            if (context.payload.pull_request.labels.find({name}=> name === 'QA Rejected')) {
+              return 'rejected'
+            }
+            if (context.payload.pull_request.labels.find({name}=> name === 'Ready for QA')) {
+              return 'reviewed'
+            }
           result-encoding: string
       - uses: jroehl/gsheet.action@v1.0.0
         if: steps.worksheet.outputs.result
@@ -23,7 +28,6 @@ jobs:
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
         with:
           spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
-          worksheetTitle: steps.worksheet.outputs.result
 
           commands: |
             [
@@ -39,7 +43,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": "data"
+                  "worksheetTitle": ${{steps.worksheet.outputs.result}}
                 }
               }
             ]
