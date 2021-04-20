@@ -11,7 +11,7 @@ jobs:
         id: worksheet
         with:
           script: |
-            console.log(github.event.pull_request.labels.*.name)           
+            console.log(github.event.pull_request.labels)           
             return "Hello!"
           result-encoding: string
       - uses: jroehl/gsheet.action@v1.0.0
