@@ -14,10 +14,10 @@ jobs:
           script: |
             const allowedLabels = ['QA Rejected', 'Ready for QA']
             console.log('label', context.payload.pull_request.labels)
-            if (context.payload.pull_request.labels.find({name}=> name === 'QA Rejected')) {
+            if (context.payload.pull_request.labels.find(({name}) => name === 'QA Rejected')) {
               return 'rejected'
             }
-            if (context.payload.pull_request.labels.find({name}=> name === 'Ready for QA')) {
+            if (context.payload.pull_request.labels.find(({name}) => name === 'Ready for QA')) {
               return 'reviewed'
             }
           result-encoding: string
