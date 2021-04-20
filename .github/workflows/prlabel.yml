@@ -25,6 +25,7 @@ jobs:
                       "${{ github.event.pull_request.updated_at }}"
                     ]
                   ],
+                  "minCol": 1,
                   "worksheetTitle": "data"
                 }
               }
