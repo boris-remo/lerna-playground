@@ -15,32 +15,6 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
-      - uses: khan/pull-request-comment-trigger@master
-        id: rejected
-        with:
-          trigger: '@qa-rejected'
-          reaction: '+1'
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
-      - uses: actions/github-script@v3
-        id: worksheet
-        if: ${{ steps.approved.outputs.triggered == 'true' || steps.rejected.outputs.triggered == 'true' }}
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            console.log('approved', steps.approved.outputs.triggered)
-            console.log('rejected', steps.rejected.outputs.triggered)
-            if (steps.approved.outputs.triggered) {
-              return 'rejected'
-            }
-            if (steps.rejected.outputs.triggered) {
-              return 'reviewed'
-            }
-          result-encoding: string
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
       - id: 'record_approval'
         if: steps.worksheet.outputs.result
         uses: jroehl/gsheet.action@v1.0.0
@@ -64,7 +38,46 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": ${{ steps.worksheet.outputs.result }}
+                  "worksheetTitle": approved
+                }
+              }
+            ]
+  record_rejection:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
+    steps:
+      - uses: khan/pull-request-comment-trigger@master
+        id: rejected
+        with:
+          trigger: '@qa-rejected'
+          reaction: '+1'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - id: 'record_rejection'
+        if: steps.worksheet.outputs.result
+        uses: jroehl/gsheet.action@v1.0.0
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+
+        with:
+          spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
+          commands: |
+            [
+              {
+                "command": "appendData",
+                "args": {
+                  "data": [
+                    [
+                      "${{ github.event.issue.title }}",
+                      "${{ github.event.issue.number }}",
+                      "${{ github.event.issue.updated_at }}",
+                      "${{ github.event.issue.html_url }}"
+                    ]
+                  ],
+                  "minCol": 1,
+                  "worksheetTitle": rejected
                 }
               }
             ]
