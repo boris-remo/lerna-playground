@@ -25,7 +25,9 @@ jobs:
 
       - uses: actions/github-script@v3
         id: worksheet
-        if: steps.approved.outputs.triggered == 'true' || steps.rejected.outputs.triggered == 'true'
+        if: ${{ steps.approved.outputs.triggered == 'true' || steps.rejected.outputs.triggered == 'true' }}
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -62,7 +64,7 @@ jobs:
                     ]
                   ],
                   "minCol": 1,
-                  "worksheetTitle": ${{steps.worksheet.outputs.result}}
+                  "worksheetTitle": ${{ steps.worksheet.outputs.result }}
                 }
               }
             ]
