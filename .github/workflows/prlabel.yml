@@ -1,7 +1,7 @@
 name: Record rejected PRs
 on:
   pull_request:
-    types: [synchronize]
+    types: [labeled]
 
 jobs:
   fetch:
