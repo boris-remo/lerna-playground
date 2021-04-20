@@ -15,8 +15,8 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
-      - id: 'record_approval'
-        if: steps.worksheet.outputs.result
+      - name: 'record_approval'
+        if: steps.approved.outputs.triggered
         uses: jroehl/gsheet.action@v1.0.0
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
@@ -54,8 +54,8 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
-      - id: 'record_rejection'
-        if: steps.worksheet.outputs.result
+      - name: 'record_rejection'
+        if: steps.rejected.outputs.triggered
         uses: jroehl/gsheet.action@v1.0.0
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
