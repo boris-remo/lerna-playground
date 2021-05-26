@@ -21,4 +21,4 @@ jobs:
           echo "- in ${{ github.event.inputs.home }}!"
 
       - run: |
-          node /build.js
+          npm run build

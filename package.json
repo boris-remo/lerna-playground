@@ -5,5 +5,8 @@
     "packages/a",
     "packages/b"
   ],
+  "scripts": {
+    "build": "node build.js"
+  },
   "devDependencies": {}
 }
