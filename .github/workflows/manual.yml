@@ -20,5 +20,6 @@ jobs:
           echo "Hello ${{ github.event.inputs.name }}!"
           echo "- in ${{ github.event.inputs.home }}!"
 
-      - run: |
+      - uses: actions/checkout@v2
+        run: |
           cd packages/a && npm run test
