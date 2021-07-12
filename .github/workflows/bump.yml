@@ -1,28 +1,21 @@
-name: 'Bump Version'
+name: Bump version
 
 on:
   push:
     branches:
-      - 'master'
+      - master
 
 jobs:
-  bump-version:
-    name: 'Bump Version on master'
+  bump_version:
     runs-on: ubuntu-latest
-
+    name: 'Bump version and create changelog with commitizen'
     steps:
-      - name: 'Checkout source code'
-        uses: 'actions/checkout@v2'
+      - name: Check out
+        uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref }}
-      - name: 'cat package.json'
-        run: cat ./package.json
-      - name: 'Automated Version Bump'
-        id: version-bump
-        uses: 'phips28/gh-action-bump-version@master'
+          fetch-depth: 0
+          token: '${{ secrets.GITHUB_TOKEN }}'
+      - name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@master
         with:
-          skip-tag: 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'cat package.json'
-        run: cat ./package.json
+          github_token: ${{ secrets.GITHUB_TOKEN }}
