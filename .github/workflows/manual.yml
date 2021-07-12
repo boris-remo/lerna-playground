@@ -1,16 +1,6 @@
 name: Manually triggered workflow
 
-on:
-  workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required: true
-        default: 'Mona the Octocat'
-      home:
-        description: 'location'
-        required: false
-        default: 'The Octoverse'
+on: workflow_dispatch
 
 jobs:
   say_hello:
@@ -19,3 +9,7 @@ jobs:
       - run: |
           echo "Hello ${{ github.event.inputs.name }}!"
           echo "- in ${{ github.event.inputs.home }}!"
+
+      - uses: actions/checkout@v2
+      - run: |
+          cd packages/a && npm run test
