@@ -2,7 +2,8 @@ name: 'Bump Version'
 
 on:
   pull_request:
-    types: [closed]
+    branches: [master]
+    types: [ready_for_review, synchronize, opened]
 
 jobs:
   bump-version:
