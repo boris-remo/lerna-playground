@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        directory: ['packages/*']
+        directory: ['packages/a', 'packages/b']
 
     steps:
       - uses: actions/checkout@v2
