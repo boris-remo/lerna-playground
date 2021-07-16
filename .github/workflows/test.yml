@@ -16,3 +16,26 @@ jobs:
       - uses: actions/checkout@v2
       - run: cd ./${{ matrix.directory }} && npm ci
       - run: cd ./${{ matrix.directory }} && npm run test
+
+      - if: matrix.directory === packages/a
+        run: |
+          mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-a
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-coverage
+          path: ${{ matrix.directory }}/coverage-a
+
+      - if: matrix.directory === packages/b
+        run: |
+          mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-b
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-coverage
+          path: ${{ matrix.directory }}/coverage-a
+
+  Coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: unit-test-coverage
