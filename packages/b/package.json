@@ -22,7 +22,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "test": "echo \"Package B tests\" && exit 0"
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
