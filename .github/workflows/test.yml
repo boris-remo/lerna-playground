@@ -38,9 +38,10 @@ jobs:
 
       - run: |
           ll
+      - run: |
           mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-${{ steps.package.outputs.name }}
+      - run: |
           ll
-
       - uses: actions/upload-artifact@v2
         with:
           name: unit-test-coverage
