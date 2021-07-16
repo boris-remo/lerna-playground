@@ -37,7 +37,9 @@ jobs:
             core.setOutput('name', '${{matrix.directory}}'.slice(-1));
 
       - run: |
+          ll
           mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-${{ steps.package.outputs.name }}
+          ll
 
       - uses: actions/upload-artifact@v2
         with:
@@ -51,3 +53,6 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: unit-test-coverage
+
+      - run: |
+          ll
