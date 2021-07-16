@@ -30,21 +30,6 @@ jobs:
       - run: cd ./${{ matrix.directory }} && npm ci
       - run: cd ./${{ matrix.directory }} && npm run test
 
-      - id: package
-        uses: actions/github-script@v3.1.0
-        with:
-          script: |
-            core.setOutput('name', '${{matrix.directory}}'.slice(-1));
-
-      - shell: bash
-        run: |
-          ls ${{ matrix.directory }}
-      - run: |
-          cd ${{ matrix.directory }}/coverage
-          mv * ./${{ steps.package.outputs.name }}
-      - shell: bash
-        run: |
-          ls ${{ matrix.directory }}
       - uses: actions/upload-artifact@v2
         with:
           name: unit-test-coverage
@@ -60,4 +45,4 @@ jobs:
 
       - shell: bash
         run: |
-          ls =
+          ls
