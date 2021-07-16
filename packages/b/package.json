@@ -29,7 +29,6 @@
   },
   "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b",
   "dependencies": {
-    "@boris-remo/a": "^0.7.0",
     "classnames": "^2.0.0"
   },
   "devDependencies": {
