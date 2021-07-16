@@ -36,11 +36,13 @@ jobs:
           script: |
             core.setOutput('name', '${{matrix.directory}}'.slice(-1));
 
-      - run: |
+      - shell: bash
+        run: |
           ll
       - run: |
           mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-${{ steps.package.outputs.name }}
-      - run: |
+      - shell: bash
+        run: |
           ll
       - uses: actions/upload-artifact@v2
         with:
@@ -55,5 +57,6 @@ jobs:
         with:
           name: unit-test-coverage
 
-      - run: |
+      - shell: bash
+        run: |
           ll
