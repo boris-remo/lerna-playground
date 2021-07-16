@@ -14,6 +14,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: cd ./${{ matrix.directory }}
       - run: npm ci
-      - run: npm run test
+      - run: cd ./${{ matrix.directory }} && npm run test
