@@ -40,7 +40,8 @@ jobs:
         run: |
           ls ${{ matrix.directory }}
       - run: |
-          mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage/${{ steps.package.outputs.name }}
+          cd ${{ matrix.directory }}/coverage
+          mv * ./${{ steps.package.outputs.name }}
       - shell: bash
         run: |
           ls ${{ matrix.directory }}
