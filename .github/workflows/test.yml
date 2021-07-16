@@ -15,4 +15,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci
-      - run: cd ./${{ matrix.directory }} && npm run test
+      - run: npm run test --workspace=${{ matrix.directory }}
