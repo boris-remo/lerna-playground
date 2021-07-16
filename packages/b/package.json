@@ -31,5 +31,8 @@
   "dependencies": {
     "@boris-remo/a": "^0.7.0",
     "classnames": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
   }
 }

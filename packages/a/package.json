@@ -30,5 +30,8 @@
   "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b",
   "dependencies": {
     "classnames": "2.2.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
   }
 }
