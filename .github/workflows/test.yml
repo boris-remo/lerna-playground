@@ -29,11 +29,16 @@ jobs:
 
       - run: cd ./${{ matrix.directory }} && npm ci
       - run: cd ./${{ matrix.directory }} && npm run test
+
       - id: package
         uses: actions/github-script@v3.1.0
         with:
           script: |
             core.setOutput('name', '${{matrix.directory}}'.slice(-1));
+
+      - run: |
+          mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-${{ steps.package.outputs.name }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: unit-test-coverage
