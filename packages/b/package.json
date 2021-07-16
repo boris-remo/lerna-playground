@@ -22,7 +22,7 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --collectCoverage"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
