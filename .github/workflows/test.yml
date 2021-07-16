@@ -33,7 +33,7 @@ jobs:
         uses: actions/github-script@v3.1.0
         with:
           script: |
-            core.setOutput('name', `${matrix.directory}`.slice(-1));
+            core.setOutput('name', '${{matrix.directory}}'.slice(-1));
       - uses: actions/upload-artifact@v2
         with:
           name: unit-test-coverage
