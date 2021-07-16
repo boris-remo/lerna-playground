@@ -38,12 +38,12 @@ jobs:
 
       - shell: bash
         run: |
-          ll
+          ls
       - run: |
           mv -v ${{ matrix.directory }}/coverage ${{ matrix.directory }}/coverage-${{ steps.package.outputs.name }}
       - shell: bash
         run: |
-          ll
+          ls
       - uses: actions/upload-artifact@v2
         with:
           name: unit-test-coverage
@@ -59,4 +59,4 @@ jobs:
 
       - shell: bash
         run: |
-          ll
+          ls
