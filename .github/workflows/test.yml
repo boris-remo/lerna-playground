@@ -16,11 +16,14 @@ jobs:
       - uses: actions/checkout@v2
       - run: cd ./${{ matrix.directory }} && npm ci
       - run: cd ./${{ matrix.directory }} && npm run test
-
+      - id: package
+        uses: actions/github-script@v3.1.0
+        run: |
+          core.setOutput('name', matrix.directory.slice(-1));
       - uses: actions/upload-artifact@v2
         with:
           name: unit-test-coverage
-          path: ${{ matrix.directory }}/coverage-${{ matrix.directory.slice(-1) }}
+          path: ${{ matrix.directory }}/coverage-${{ steps.package.outputs.name }}
 
   Coverage:
     needs: Test
