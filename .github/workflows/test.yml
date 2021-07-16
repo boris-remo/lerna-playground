@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        directory: ['packages/a', 'packages/b']
+        directory: ['packages/*']
 
     steps:
       - uses: actions/checkout@v2
-
+      - run: cd ./${{ matrix.directory }}
+      - run: npm ci
       - run: npm run test
