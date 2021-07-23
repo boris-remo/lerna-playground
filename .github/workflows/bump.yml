@@ -1,15 +1,13 @@
 name: 'Bump Version'
 
 on:
-  push:
-    branches:
-      - 'master'
+  pull_request:
+    branches: [master]
+    types: [ready_for_review, synchronize, opened]
 
 jobs:
   bump-version:
-    name: 'Bump Version on master'
     runs-on: ubuntu-latest
-
     steps:
       - name: 'Checkout source code'
         uses: 'actions/checkout@v2'
@@ -25,7 +23,7 @@ jobs:
         with:
           skip-tag: 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RUN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'cat package.json'
         run: cat ./package.json
