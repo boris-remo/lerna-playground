@@ -1,9 +1,9 @@
 name: 'Bump Version'
 
 on:
-  pull_request:
-    branches: [master]
-    types: [ready_for_review, synchronize, opened]
+  push:
+    branches:
+      - 'master'
 
 jobs:
   bump-version:
@@ -23,7 +23,7 @@ jobs:
         with:
           skip-tag: 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RUN }}
 
       - name: 'cat package.json'
         run: cat ./package.json
