@@ -2,13 +2,14 @@ name: Request Code Review
 
 on:
   workflow_run:
-    workflows: ['Install Dependencies']
+    workflows: ['Install Dependencies', 'Test']
     branches-ignore: [master]
     types: [completed]
 
 jobs:
   auto-request-review:
     name: Auto Request Review
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Request review based on files changes and/or groups the author belongs to
