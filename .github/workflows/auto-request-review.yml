@@ -2,7 +2,7 @@ name: Request Code Review
 
 on:
   workflow_run:
-    workflows: ['Install Dependencies', 'Lint', 'Test']
+    workflows: ['Install Dependencies']
     branches-ignore: [master]
     types: [completed]
 
