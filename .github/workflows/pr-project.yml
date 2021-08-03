@@ -8,6 +8,11 @@ jobs:
   pr-project-check:
     runs-on: ubuntu-latest
     steps:
+      - name: log
+        run: |
+          echo "${{github.event}}"
+          echo "${{github.event.pull_request}}"
+          echo "${{github.event.pull_request.has_projects}}"
       - uses: actions/github-script@v4
         with:
           script: |
