@@ -1,0 +1,15 @@
+name: Pull Request Project Check
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, ready_for_review]
+
+jobs:
+  pr-project-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: log
+        run: |
+          echo ${{github.event}}
+          echo ${{github.event.pull_request}}
+          echo ${{github.event.pull_request.has_projects}}
