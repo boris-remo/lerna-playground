@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v4
-        run: |
-          console.log(github.event);
-          console.log(github.event.pull_request);
-          console.log(github.event.pull_request.has_projects);
+        with:
+          script: |
+            console.log(github.event);
+            console.log(github.event.pull_request);
+            console.log(github.event.pull_request.has_projects);
