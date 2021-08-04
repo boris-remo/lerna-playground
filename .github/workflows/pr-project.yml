@@ -42,6 +42,7 @@ jobs:
 
       - uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.PAT }}
           script: |
             const columns = await github.projects.listColumns({
               project_id: 13011876
