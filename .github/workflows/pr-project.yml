@@ -62,14 +62,9 @@ jobs:
 
             return isInProject
 
-      - name: Create comment
+      - name: Create Project Card
+        id: create-card
         if: steps.project-check.outputs.result == 'false'
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ steps.issue-number.outputs.result }}
-          body: Don't forget to link to a project! @${{ github.actor }}
-
-      - name: Create or Update Project Card
         uses: peter-evans/create-or-update-project-card@v1
         with:
           token: ${{ secrets.PAT }}
@@ -77,3 +72,12 @@ jobs:
           project-name: test
           column-name: To Do
           issue-number: ${{ steps.issue-number.outputs.result }}
+
+      - name: Create comment
+        if: steps.project-check.outputs.result == 'false'
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ steps.issue-number.outputs.result }}
+          body: |
+            @${{ github.actor }}
+            I noticed you forgot to link to our project, so I added it for you - ${{ steps.create-card.outputs.card-id }}
