@@ -58,8 +58,8 @@ jobs:
               console.log("columnCards.length", columnCards.length);
               console.log("columnCards", columnCards);
 
-              return ...columnCards
-            }));
+              return columnCards
+            })).flat();
 
             console.log("cards.length", cards.length);
             console.log("cards", cards);
