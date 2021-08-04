@@ -2,7 +2,7 @@ name: Pull Request Project Check
 
 on:
   pull_request:
-    types: [opened, edited, reopened, ready_for_review]
+    types: [opened, edited, reopened]
   issues:
     types: [opened, edited, reopened]
 
@@ -24,47 +24,46 @@ jobs:
             console.log('number', number)
             return number
 
-      - id: project-check
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.PAT }}
-          result-encoding: string
-          script: |
-            const {data: columns} = await github.projects.listColumns({
-              project_id: 13011876,
-            });
+      # - id: project-check
+      #   uses: actions/github-script@v4
+      #   with:
+      #     github-token: ${{ secrets.PAT }}
+      #     result-encoding: string
+      #     script: |
+      #       const {data: columns} = await github.projects.listColumns({
+      #         project_id: 13011876,
+      #       });
 
-            console.log('columns', columns);
+      #       console.log('columns', columns);
 
-            const cards = await Promise.all(columns.map(async ({ id }) => {
-              const {data: columnCards} = await github.projects.listCards({
-                column_id: id,
-              });
+      #       const cards = await Promise.all(columns.map(async ({ id }) => {
+      #         const {data: columnCards} = await github.projects.listCards({
+      #           column_id: id,
+      #         });
 
-              console.log("columnCards.length", columnCards.length);
-              console.log("columnCards", columnCards);
+      #         console.log("columnCards.length", columnCards.length);
+      #         console.log("columnCards", columnCards);
 
-              return columnCards
-            }));
+      #         return columnCards
+      #       }));
 
-            console.log("cards.length", cards.length);
-            console.log("cards", cards);
+      #       console.log("cards.length", cards.length);
+      #       console.log("cards", cards);
 
-            const isInProject = cards.flat().some(({ content_url }) => {
-              const contentURLNumber = content_url.split("/")[7];
-              console.log("contentURLNumber :", contentURLNumber);
+      #       const isInProject = cards.flat().some(({ content_url }) => {
+      #         const contentURLNumber = content_url.split("/")[7];
+      #         console.log("contentURLNumber :", contentURLNumber);
 
-              return contentURLNumber == ${{ steps.issue-number.outputs.result }};
-            });
+      #         return contentURLNumber == ${{ steps.issue-number.outputs.result }};
+      #       });
 
-            console.log("steps.issue-number.outputs.result", ${{ steps.issue-number.outputs.result }});
-            console.log("isInProject", isInProject);
+      #       console.log("steps.issue-number.outputs.result", ${{ steps.issue-number.outputs.result }});
+      #       console.log("isInProject", isInProject);
 
-            return isInProject
+      #       return isInProject
 
       - name: Create Project Card
         id: create-card
-        if: steps.project-check.outputs.result == 'false'
         uses: peter-evans/create-or-update-project-card@v1
         with:
           token: ${{ secrets.PAT }}
@@ -74,7 +73,7 @@ jobs:
           issue-number: ${{ steps.issue-number.outputs.result }}
 
       - name: Create comment
-        if: steps.project-check.outputs.result == 'false'
+        if: steps.issue-number.outputs.result
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ steps.issue-number.outputs.result }}
