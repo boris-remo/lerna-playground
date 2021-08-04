@@ -50,7 +50,7 @@ jobs:
 
             console.log('columns', columns);
 
-            const cards = columns.map(async ({ id }) => {
+            const cards = await Promise.all(columns.map(async ({ id }) => {
               const {data: columnCards} = await github.projects.listCards({
                 column_id: id,
               });
@@ -59,7 +59,7 @@ jobs:
               console.log("columnCards", columnCards);
 
               return columnCards
-            });
+            }));
 
             console.log("cards.length", cards.length);
             console.log("cards", cards);
