@@ -80,4 +80,4 @@ jobs:
           issue-number: ${{ steps.issue-number.outputs.result }}
           body: |
             @${{ github.actor }}
-            I noticed you forgot to link to our project, so I added it for you - ${{ steps.create-card.outputs.card-id }}
+            I noticed you forgot to link to our project, so I added it for you - https://github.com/orgs/borisremo/projects/1#card-${{ steps.create-card.outputs.card-id }}
