@@ -67,7 +67,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ steps.issue-number.outputs.result }}
-          body: Don't forget to link to a project!
+          body: Don't forget to link to a project! @${{context.actor}}
 
       - name: Create or Update Project Card
         uses: peter-evans/create-or-update-project-card@v1
