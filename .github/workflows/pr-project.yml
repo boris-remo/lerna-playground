@@ -59,7 +59,7 @@ jobs:
               console.log("columnCards", columnCards);
 
               return columnCards
-            })).flat();
+            }).flat());
 
             console.log("cards.length", cards.length);
             console.log("cards", cards);
