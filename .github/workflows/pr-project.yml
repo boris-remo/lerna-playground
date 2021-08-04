@@ -7,17 +7,6 @@ on:
     types: [opened, edited, reopened]
 
 jobs:
-  get-issue-number:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v4
-        with:
-          result-encoding: string
-          script: |
-            const number = context.eventName === 'pull_request' ? context.payload.pull_request.number : context.payload.issue.number
-            console.log('number', number)
-            return number
-
   project-check:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +15,17 @@ jobs:
         with:
           script: console.log(context)
 
-      - uses: actions/github-script@v4
+      - id: issue-number
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const number = context.eventName === 'pull_request' ? context.payload.pull_request.number : context.payload.issue.number
+            console.log('number', number)
+            return number
+
+      - id: project-check
+        uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PAT }}
           result-encoding: boolean
@@ -51,19 +50,16 @@ jobs:
             console.log("cards.length", cards.length);
             console.log("cards", cards);
 
-            const isInProject = cards.flat().some(({ content_url }) => content_url.endsWidth(steps.get-issue-number.outputs.result));
+            const isInProject = cards.flat().some(({ content_url }) => content_url.endsWidth(steps.issue-number.outputs.result));
 
-            console.log("steps.get-issue-number.outputs.result", steps.get-issue-number.outputs.result);
+            console.log("steps.issue-number.outputs.result", steps.issue-number.outputs.result);
             console.log("isInProject", isInProject);
 
             return isInProject
 
-  send-message:
-    runs-on: ubuntu-latest
-    if: steps.project-check.outputs.result
-    steps:
       - name: Create comment
+        if: steps.project-check.outputs.result == false
         uses: peter-evans/create-or-update-comment@v1
         with:
-          issue-number: steps.get-issue-number.outputs.result
+          issue-number: steps.issue-number.outputs.result
           body: Don't forget to link to a project!
