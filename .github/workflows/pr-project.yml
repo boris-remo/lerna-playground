@@ -3,6 +3,8 @@ name: Pull Request Project Check
 on:
   pull_request:
     types: [opened, edited, reopened, ready_for_review]
+  issues:
+    types: [opened, edited, reopened]
 
 jobs:
   pr-project-check:
