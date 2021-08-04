@@ -7,36 +7,20 @@ on:
     types: [opened, edited, reopened]
 
 jobs:
-  pr-project-check:
+  get-issue-number:
     runs-on: ubuntu-latest
     steps:
-      - name: log
-        run: |
+      - uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const number = context.eventName === 'pull_request' ? context.payload.pull_request.number : context.payload.issue.number
+            console.log('number', number)
+            return number
 
-          echo "github.event.pull_request"
-          echo "${{ toJson(github.event.pull_request) }}"
-          echo ""
-          echo "github.event.pull_request.has_projects"
-          echo "${{ toJson(github.event.pull_request.has_projects) }}"
-          echo ""
-          echo "The github context is:"
-          echo "${{ toJson(github) }}"
-          echo ""
-          echo "The job context is:"
-          echo "${{ toJson(job) }}"
-          echo ""
-          echo "The steps context is:"
-          echo "${{ toJson(steps) }}"
-          echo ""
-          echo "The runner context is:"
-          echo "${{ toJson(runner) }}"
-          echo ""
-          echo "The strategy context is:"
-          echo "${{ toJson(strategy) }}"
-          echo ""
-          echo "The matrix context is:"
-          echo "${{ toJson(matrix) }}"
-
+  project-check:
+    runs-on: ubuntu-latest
+    steps:
       - name: View context attributes
         uses: actions/github-script@v4
         with:
@@ -45,6 +29,7 @@ jobs:
       - uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PAT }}
+          result-encoding: boolean
           script: |
             const {data: columns} = await github.projects.listColumns({
               project_id: 13011876,
@@ -66,7 +51,19 @@ jobs:
             console.log("cards.length", cards.length);
             console.log("cards", cards);
 
-            const isInProject = cards.flat().some(({ content_url }) => content_url === context.payload.pull_request.issue_url);
+            const isInProject = cards.flat().some(({ content_url }) => content_url.endsWidth(steps.get-issue-number.outputs.result));
 
-            console.log("context.payload.pull_request.issue_url", context.payload.pull_request.issue_url);
+            console.log("steps.get-issue-number.outputs.result", steps.get-issue-number.outputs.result);
             console.log("isInProject", isInProject);
+
+            return isInProject
+
+  send-message:
+    runs-on: ubuntu-latest
+    if: steps.project-check.outputs.result
+    steps:
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: steps.get-issue-number.outputs.result
+          body: Don't forget to link to a project!
