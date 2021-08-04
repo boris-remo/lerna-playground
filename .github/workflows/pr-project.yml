@@ -28,7 +28,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           github-token: ${{ secrets.PAT }}
-          result-encoding: boolean
+          result-encoding: string
           script: |
             const {data: columns} = await github.projects.listColumns({
               project_id: 13011876,
@@ -50,7 +50,12 @@ jobs:
             console.log("cards.length", cards.length);
             console.log("cards", cards);
 
-            const isInProject = cards.flat().some(({ content_url }) => content_url.split('/')[7] === ${{ steps.issue-number.outputs.result }});
+            const isInProject = cards.flat().some(({ content_url }) => {
+              const contentURLNumber = content_url.split("/")[7];
+              console.log("contentURLNumber :", contentURLNumber);
+
+              return contentURLNumber == ${{ steps.issue-number.outputs.result }};
+            });
 
             console.log("steps.issue-number.outputs.result", ${{ steps.issue-number.outputs.result }});
             console.log("isInProject", isInProject);
@@ -58,7 +63,7 @@ jobs:
             return isInProject
 
       - name: Create comment
-        if: steps.project-check.outputs.result == false
+        if: steps.project-check.outputs.result == 'false'
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: steps.issue-number.outputs.result
