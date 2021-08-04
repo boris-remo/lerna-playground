@@ -35,9 +35,16 @@ jobs:
           echo "The matrix context is:"
           echo "${{ toJson(matrix) }}"
 
+      - name: View context attributes
+        uses: actions/github-script@v4
+        with:
+          script: console.log(context)
+
       - uses: actions/github-script@v4
         with:
           script: |
-            console.log(JSON.stringify(${{github.event}}));
-            console.log(JSON.stringify(${{github.event.pull_request}}));
-            console.log(JSON.stringify(${{github.event.pull_request.has_projects}}));
+            const columns = await github.projects.listColumns({
+              project_id: 13011876
+            });
+
+            console.log(columns)
