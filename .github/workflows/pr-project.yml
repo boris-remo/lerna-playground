@@ -44,14 +44,14 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
-            const columns = await github.projects.listColumns({
+            const {data: columns} = await github.projects.listColumns({
               project_id: 13011876,
             });
 
-            console.log('columns.data', columns.data);
+            console.log('columns', columns);
 
-            const cards = columns.data.forEach(async ({ id }) => {
-              const columnCards = await github.projects.listCards({
+            const cards = columns.map(async ({ id }) => {
+              const {data: columnCards} = await github.projects.listCards({
                 column_id: id,
               });
 
