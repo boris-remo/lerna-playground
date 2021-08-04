@@ -58,8 +58,13 @@ jobs:
               console.log("columnCards.length", columnCards.length);
               console.log("columnCards", columnCards);
 
-              return columnCards
+              return ...columnCards
             }));
 
             console.log("cards.length", cards.length);
             console.log("cards", cards);
+
+            const isInProject = cards.filter(({ content_url }) => content_url === context.payload.pull_request.issue_url);
+
+            console.log("context.payload.pull_request.issue_url", context.payload.pull_request.issue_url);
+            console.log("isInProject", isInProject);
