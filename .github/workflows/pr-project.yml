@@ -48,9 +48,9 @@ jobs:
               project_id: 13011876,
             });
 
-            console.log('columns', columns);
+            console.log('columns.data', columns.data);
 
-            const cards = columns.forEach(async ({ id }) => {
+            const cards = columns.data.forEach(async ({ id }) => {
               const columnCards = await github.projects.listCards({
                 column_id: id,
               });
