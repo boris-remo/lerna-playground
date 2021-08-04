@@ -72,6 +72,8 @@ jobs:
       - name: Create or Update Project Card
         uses: peter-evans/create-or-update-project-card@v1
         with:
+          token: ${{ secrets.PAT }}
+          project-location: borisremo
           project-name: test
           column-name: To Do
           issue-number: ${{ steps.issue-number.outputs.result }}
