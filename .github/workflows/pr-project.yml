@@ -66,6 +66,5 @@ jobs:
         if: steps.project-check.outputs.result == 'false'
         uses: peter-evans/create-or-update-comment@v1
         with:
-          token: ${{ secrets.PAT }}
           issue-number: ${{ steps.issue-number.outputs.result }}
           body: Don't forget to link to a project!
