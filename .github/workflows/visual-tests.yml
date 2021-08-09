@@ -25,6 +25,7 @@ jobs:
               - 'client/**/*'
   SkipHappo:
     needs: CheckClientChanges
+    if: ${{ needs.CheckClientChanges.outputs.client == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - run: |
