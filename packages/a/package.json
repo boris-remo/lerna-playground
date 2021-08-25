@@ -22,8 +22,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "test": "echo \"Package A tests\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "jest --collectCoverage --coverageDirectory coverage/a --coverageReporters lcov"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
@@ -31,5 +31,8 @@
   "gitHead": "f6ba6bd53b202866030abcab6becfeb159f45f9b",
   "dependencies": {
     "classnames": "2.2.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
   }
 }

@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "version": "1.0.46",
   "workspaces": [
     "packages/a",
     "packages/b"
@@ -11,6 +12,20 @@
   },
   "scripts": {
     "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "build": "node build.js",
+    "test:a": "jest --projects packages/a",
+    "test:b": "jest --projects packages/b"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
+    "jest": "^27.0.6"
   }
 }

@@ -1,0 +1,94 @@
+name: Record rejected PRs
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  record_approval:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
+    steps:
+      - uses: khan/pull-request-comment-trigger@master
+        id: approved
+        with:
+          trigger: '@qa-approved'
+          reaction: '+1'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - uses: jroehl/gsheet.action@v1.0.0
+        if: ${{ steps.approved.outputs.triggered == 'true' }}
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+
+        with:
+          spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
+          commands: |
+            [
+              {
+                "command": "appendData",
+                "args": {
+                  "data": [
+                    [
+                      "${{ github.event.issue.title }}",
+                      "${{ github.event.issue.number }}",
+                      "${{ github.event.issue.updated_at }}",
+                      "${{ github.event.issue.html_url }}"
+                    ]
+                  ],
+                  "minCol": 1,
+                  "worksheetTitle": "approved"
+                }
+              }
+            ]
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.approved.outputs.triggered == 'true' }}
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          labels: 'QA Approved'
+
+  record_rejection:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request }}
+    steps:
+      - uses: khan/pull-request-comment-trigger@master
+        id: rejected
+        with:
+          trigger: '@qa-rejected'
+          reaction: '+1'
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - uses: jroehl/gsheet.action@v1.0.0
+        if: ${{ steps.rejected.outputs.triggered == 'true' }}
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+
+        with:
+          spreadsheetId: 1pfh6CHEKdOhraRNQzxA5NDhE9jOtKqcC4f802Z-Dy9w
+          commands: |
+            [
+              {
+                "command": "appendData",
+                "args": {
+                  "data": [
+                    [
+                      "${{ github.event.issue.title }}",
+                      "${{ github.event.issue.number }}",
+                      "${{ github.event.issue.updated_at }}",
+                      "${{ github.event.issue.html_url }}"
+                    ]
+                  ],
+                  "minCol": 1,
+                  "worksheetTitle": "rejected"
+                }
+              }
+            ]
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.rejected.outputs.triggered == 'true' }}
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          labels: 'QA Rejected'

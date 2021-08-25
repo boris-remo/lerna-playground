@@ -1,7 +1,9 @@
-'use strict';
+"use strict";
 
-const b = require('..');
+const b = require("..");
 
-describe('b', () => {
-    it('needs tests');
+describe("b", () => {
+  it("Package B works", () => {
+    b();
+  });
 });
