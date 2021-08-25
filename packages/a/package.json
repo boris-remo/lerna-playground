@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "jest --collectCoverage --coverageDirectory coverage/a --coverageReporters lcov"
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
