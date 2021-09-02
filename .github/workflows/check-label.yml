@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: 'check-qa-approval'
-        uses: docker://agilepathway/pull-request-label-checker:latest
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          one_of: 'QA Approved'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["QA Approved"]'
 
       - name: View context attributes
         uses: actions/github-script@v4
