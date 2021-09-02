@@ -11,9 +11,10 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           one_of: 'QA Approved'
+
       - name: View context attributes
         uses: actions/github-script@v4
         with:
           script: |
-            console.log('steps', steps.check-qa-approval.outputs)
+            console.log('steps', ${{ steps.check-qa-approval.outputs}})
             console.log('context', context)
