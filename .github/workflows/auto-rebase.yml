@@ -1,14 +1,17 @@
-name: Automatic Rebase
-
+name: Auto update branch
 on:
-  push:
-    branches: [master]
+  pull_request:
+    types: [labeled, synchronize]
 
 jobs:
-  Auto:
-    name: Auto-update
-    runs-on: ubuntu-latest
+  auto-update:
+    runs-on: ubuntu-18.04
     steps:
+      - id: 'check-labels'
+        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
+        with:
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+          valid-labels: 'Ready for QA, QA Approved"'
       - uses: tibdex/auto-update@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
