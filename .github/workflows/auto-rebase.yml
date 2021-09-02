@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: docker://chinthakagodawita/autoupdate-action:v1
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RUN }}
           PR_FILTER: 'labelled'
           PR_LABELS: 'Ready for QA'
