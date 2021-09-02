@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: 'check-qa-approval'
-        uses: jesusvasquez333/verify-pr-label-action@v1.4.0
+        uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          invalid-labels: 'QA Approved'
+          one_of: 'QA Approved'
       - run: echo '${{ steps.check-qa-approval.outputs }}'
