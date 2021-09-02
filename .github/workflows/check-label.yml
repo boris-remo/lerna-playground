@@ -16,5 +16,6 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            console.log('steps', ${{ steps.check-qa-approval.outputs}})
+            console.log('steps result', ${{ steps.check-qa-approval.outputs.result }})
+            console.log('steps', JSON.stringify(${{ steps.check-qa-approval.outputs.result }}))
             console.log('context', context)
