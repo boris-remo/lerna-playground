@@ -9,6 +9,6 @@ jobs:
       - id: 'check-qa-approval'
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           one_of: 'QA Approved'
-      - run: echo '${{ steps.check-qa-approval.outputs }}'
+      - run: echo '${{ steps.check-qa-approval.outputs }}' | python -m json.tool
