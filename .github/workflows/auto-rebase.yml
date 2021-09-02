@@ -1,7 +1,7 @@
 name: Auto update branch
 on:
   push:
-    branches: ['master']
+    branches: [master]
 
 jobs:
   auto-update:
