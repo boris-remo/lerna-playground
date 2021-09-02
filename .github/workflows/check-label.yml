@@ -7,15 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: 'check-qa-approval'
-        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
+        uses: shioyang/check-pr-labels-on-push-action@latest
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: '["QA Approved"]'
+          labels: '["bug"]'
 
       - name: View context attributes
         uses: actions/github-script@v4
         with:
           script: |
             console.log('steps result', ${{ steps.check-qa-approval.outputs.result }})
-            console.log('steps', JSON.stringify(${{ steps.check-qa-approval.outputs }}))
-            console.log('context', context)
