@@ -13,7 +13,4 @@ jobs:
           one_of: 'QA Approved'
 
       - name: View context attributes
-        uses: actions/github-script@v4
-        with:
-          script: |
-            console.log('outcome', ${{ steps.check-qa-approval.outcome  }})
+        run: echo "${{ steps.check-qa-approval.outcome }}"
