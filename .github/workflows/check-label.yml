@@ -17,5 +17,5 @@ jobs:
         with:
           script: |
             console.log('steps result', ${{ steps.check-qa-approval.outputs.result }})
-            console.log('steps', JSON.stringify(${{ steps.check-qa-approval.outputs.result }}))
+            console.log('steps', JSON.stringify(${{ steps.check-qa-approval.outputs }}))
             console.log('context', context)
