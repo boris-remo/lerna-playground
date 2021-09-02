@@ -1,0 +1,32 @@
+name: Run visual tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+    types: [ready_for_review, synchronize, opened]
+
+jobs:
+  CheckClientChanges:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    outputs:
+      client: ${{ steps.detect_client_changes.outputs.client }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check for client changes
+        id: detect_client_changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            client:
+              - 'client/**/*'
+  SkipHappo:
+    needs: CheckClientChanges
+    if: ${{ needs.CheckClientChanges.outputs.client == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ needs.CheckClientChanges.outputs.client }}"

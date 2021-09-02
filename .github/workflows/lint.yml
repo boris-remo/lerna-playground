@@ -8,6 +8,7 @@ on:
 
 jobs:
   Lint:
+    needs: Install
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
