@@ -10,8 +10,7 @@ jobs:
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          none_of: 'QA Approved', 'QA Rejected'
+          none_of: QA-approved,QA-rejected
 
       - name: View context attributes
         run: echo "${{ steps.check-qa-approval.outcome }}"
-        
