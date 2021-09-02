@@ -1,11 +1,12 @@
+name: 'Check Label'
 on:
   pull_request:
     types: [opened, labeled, unlabeled, synchronize]
 jobs:
-  Install:
+  check-label:
     runs-on: ubuntu-latest
     steps:
       - uses: jesusvasquez333/verify-pr-label-action@v1.4.0
-      - with:
+        with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           invalid-labels: 'QA approved'
