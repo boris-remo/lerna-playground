@@ -1,0 +1,21 @@
+name: Auto label Ready for QA
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  build:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - id: check-qa-approval
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          none_of: QA-approved,QA-rejected
+
+      - if: ${{ steps.check-qa-approval.outcome }}
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: Ready for QA
