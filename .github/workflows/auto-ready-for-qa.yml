@@ -10,6 +10,11 @@ jobs:
     outputs:
       is-pending: ${{ steps.check-labels.outcome }}
     steps:
+      - name: View context attributes
+        uses: actions/github-script@v4
+        with:
+          script: console.log(context)
+      - run: echo "${{ github.event.review }}"
       - id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
