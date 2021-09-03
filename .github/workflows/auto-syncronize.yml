@@ -6,25 +6,22 @@ on:
       - synchronize
 
 jobs:
-  build-and-test:
+  initialise:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout Project
+        uses: actions/checkout@v2
+        with:
+          # for pull_request so we can do HEAD^2
+          fetch-depth: 2
 
-      - name: GITHUB CONTEXT
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-      - name: get commit message
+      - name: Get commit message
+        id: get_commit_message
         run: |
-          echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
-      - name: show commit message
-        run: echo $commitmsg
+          echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD^2)
 
-      - name: step1
-        if: contains( env.commitmsg , 'Merge master into' )
-        run: echo hello
+    outputs:
+      commit_message: echo "${{ steps.get_commit_message.outputs.commit_message }}"
 
   handle-push:
     runs-on: ubuntu-latest
