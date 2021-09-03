@@ -25,6 +25,7 @@ jobs:
       commit_message: echo "${{ steps.get_commit_message.outputs.commit_message }}"
 
   logs:
+    needs: get-commit-message
     runs-on: ubuntu-latest
     outputs:
       is-ready: ${{ steps.check-labels.outcome }}
@@ -33,6 +34,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: console.log(context)
+      - run: echo "${{ needs.get-commit-message.outputs.commit_message }}"
 
   dismiss-reviews:
     needs: get-commit-message
