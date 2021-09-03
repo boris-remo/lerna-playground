@@ -11,13 +11,15 @@ jobs:
       - if: github.event.review.state == 'approved'
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          labels: Peer Reviewed
+          github_token: ${{ github.token }}
+          labels: Peer-reviewed
 
       - if: github.event.review.state == 'changes_requested'
         uses: actions-ecosystem/action-remove-labels@v1
         with:
+          github_token: ${{ github.token }}
           labels: |
-            Peer Reviewed,
+            Peer-reviewed,
             Ready for QA,
             QA-approved,
             QA-rejected
