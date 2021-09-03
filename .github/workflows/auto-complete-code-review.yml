@@ -18,8 +18,22 @@ jobs:
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ github.token }}
-          labels: |
-            Peer-reviewed
-            Ready for QA
-            QA-approved
-            QA-rejected
+          labels: Peer-reviewed
+
+      - if: github.event.review.state == 'changes_requested'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ github.token }}
+          labels: Ready for QA
+
+      - if: github.event.review.state == 'changes_requested'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ github.token }}
+          labels: QA-approved
+
+      - if: github.event.review.state == 'changes_requested'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ github.token }}
+          labels: QA-rejected
