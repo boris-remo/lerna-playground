@@ -5,17 +5,22 @@ on:
     types: [submitted]
 
 jobs:
-  build:
-    if: github.event.review.state == 'approved'
+  qa-review:
     runs-on: ubuntu-latest
+    outputs:
+      is-pending: ${{ steps.check-labels.outcome }}
     steps:
-      - id: check-qa-approval
+      - id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           none_of: QA-approved,QA-rejected
 
-      - if: ${{ steps.check-qa-approval.outcome }}
-        uses: actions-ecosystem/action-add-labels@v1
+  ready-for-qa:
+    needs: qa-review
+    if: github.event.review.state == 'approved' && needs.qa-review.outputs.is-pending == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: Ready for QA
