@@ -1,8 +1,13 @@
 name: Auto label Ready for QA
 
 on:
-  pull_request_review:
-    types: [submitted]
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
 
 jobs:
   qa-review:
@@ -14,7 +19,9 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: console.log(context)
+
       - run: echo "${{ github.event.review }}"
+
       - id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:

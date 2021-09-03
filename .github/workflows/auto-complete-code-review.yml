@@ -1,0 +1,23 @@
+name: Automate PR reviews
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - if: github.event.review.state == 'approved'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: Peer Reviewed
+
+      - if: github.event.review.state == 'changes_requested'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: |
+            Peer Reviewed,
+            Ready for QA,
+            QA-approved,
+            QA-rejected
