@@ -1,0 +1,33 @@
+name: Automate Ready for QA
+
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  handle-push:
+    runs-on: ubuntu-latest
+    outputs:
+      is-ready: ${{ steps.check-labels.outcome }}
+    steps:
+      - name: View context attributes
+        uses: actions/github-script@v4
+        with:
+          script: console.log(context)
+
+      - name: Get PR Commits
+        id: 'get-pr-commits'
+        uses: tim-actions/get-pr-commits@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "${{ steps.get-pr-commits.outputs.commits }}"
+
+  dismiss-reviews:
+    needs: handle-push
+    if: needs.handle-push.outputs.is-ready == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: Ready for QA

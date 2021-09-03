@@ -1,4 +1,4 @@
-name: Auto label Ready for QA
+name: Automate Ready for QA
 
 on:
   pull_request:
@@ -13,15 +13,8 @@ jobs:
   qa-review:
     runs-on: ubuntu-latest
     outputs:
-      is-pending: ${{ steps.check-labels.outcome }}
+      is-ready: ${{ steps.check-labels.outcome }}
     steps:
-      - name: View context attributes
-        uses: actions/github-script@v4
-        with:
-          script: console.log(context)
-
-      - run: echo "${{ github.event.review }}"
-
       - id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
@@ -31,7 +24,7 @@ jobs:
 
   ready-for-qa:
     needs: qa-review
-    if: github.event.review.state == 'approved' && needs.qa-review.outputs.is-pending == 'success'
+    if: needs.qa-review.outputs.is-ready == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions-ecosystem/action-add-labels@v1

@@ -5,35 +5,43 @@ on:
     types: [submitted]
 
 jobs:
-  build:
+  handle-approval:
     runs-on: ubuntu-latest
     steps:
-      - if: github.event.review.state == 'approved'
+      - name: Add Peer-reviewed label when PR is approved
+        if: github.event.review.state == 'approved'
         uses: actions-ecosystem/action-add-labels@v1
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.WORKFLOW_RUN }}
           labels: Peer-reviewed
 
-      - if: github.event.review.state == 'changes_requested'
+  handle-changes-requested:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset Peer-reviewed label if changes are requested
+        if: github.event.review.state == 'changes_requested'
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.WORKFLOW_RUN }}
           labels: Peer-reviewed
 
-      - if: github.event.review.state == 'changes_requested'
+      - name: Reset Ready for QA label if changes are requested
+        if: github.event.review.state == 'changes_requested'
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.WORKFLOW_RUN }}
           labels: Ready for QA
 
-      - if: github.event.review.state == 'changes_requested'
+      - name: Reset QA-approved label if changes are requested
+        if: github.event.review.state == 'changes_requested'
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.WORKFLOW_RUN }}
           labels: QA-approved
 
-      - if: github.event.review.state == 'changes_requested'
+      - name: Reset QA-rejected label if changes are requested
+        if: github.event.review.state == 'changes_requested'
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.WORKFLOW_RUN }}
           labels: QA-rejected
