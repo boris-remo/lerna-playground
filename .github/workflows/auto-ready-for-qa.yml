@@ -28,6 +28,13 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           none_of: QA-approved,QA-rejected
           all_of: Peer-reviewed
+  logs:
+    needs: qa-review
+    runs-on: ubuntu-latest
+    outputs:
+      is-pending: ${{ steps.check-labels.outcome }}
+    steps:
+      - run: echo "${{ needs.qa-review.outputs.is-pending }}"
 
   ready-for-qa:
     needs: qa-review
