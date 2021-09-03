@@ -6,7 +6,7 @@ on:
       - synchronize
 
 jobs:
-  initialise:
+  get-commit-message:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
@@ -24,7 +24,7 @@ jobs:
     outputs:
       commit_message: echo "${{ steps.get_commit_message.outputs.commit_message }}"
 
-  handle-push:
+  logs:
     runs-on: ubuntu-latest
     outputs:
       is-ready: ${{ steps.check-labels.outcome }}
@@ -34,13 +34,13 @@ jobs:
         with:
           script: console.log(context)
 
-      - run: echo "${{ steps.get-pr-commits.outputs.commits }}"
-
   dismiss-reviews:
-    needs: handle-push
-    if: needs.handle-push.outputs.is-ready == 'success'
+    needs: get-commit-message
+    if: "!contains(needs.get-commit-message.outputs.commit_message, 'Merge master into')"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions-ecosystem/action-add-labels@v1
+      - name: Reset Peer-reviewed label if changes are added
+        uses: actions-ecosystem/action-remove-labels@v1
         with:
-          labels: Ready for QA
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: Peer-reviewed
