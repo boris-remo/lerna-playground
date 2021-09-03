@@ -19,7 +19,7 @@ jobs:
         with:
           github_token: ${{ github.token }}
           labels: |
-            Peer-reviewed,
-            Ready for QA,
-            QA-approved,
+            Peer-reviewed
+            Ready for QA
+            QA-approved
             QA-rejected
