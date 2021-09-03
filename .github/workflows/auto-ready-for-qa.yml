@@ -27,6 +27,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           none_of: QA-approved,QA-rejected
+          all_of: Peer-reviewed
 
   ready-for-qa:
     needs: qa-review
