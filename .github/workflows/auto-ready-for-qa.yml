@@ -38,7 +38,7 @@ jobs:
 
   ready-for-qa:
     needs: qa-review
-    if: github.event.review.state == 'approved' && needs.qa-review.outputs.is-pending == 'success'
+    if: needs.qa-review.outputs.is-pending == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions-ecosystem/action-add-labels@v1
