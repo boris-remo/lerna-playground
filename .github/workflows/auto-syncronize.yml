@@ -19,6 +19,7 @@ jobs:
         id: get_commit_message
         run: |
           echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD^2)
+      - run: echo "${{ steps.get_commit_message.outputs.commit_message  }}"
 
     outputs:
       commit_message: echo "${{ steps.get_commit_message.outputs.commit_message }}"
@@ -33,11 +34,6 @@ jobs:
         with:
           script: console.log(context)
 
-      - name: Get PR Commits
-        id: 'get-pr-commits'
-        uses: tim-actions/get-pr-commits@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "${{ steps.get-pr-commits.outputs.commits }}"
 
   dismiss-reviews:
