@@ -5,7 +5,7 @@ on:
     types: [submitted]
 
 jobs:
-  build:
+  handle-approval:
     runs-on: ubuntu-latest
     steps:
       - name: Add Peer-reviewed label when PR is approved
@@ -15,6 +15,9 @@ jobs:
           github_token: ${{ github.token }}
           labels: Peer-reviewed
 
+  handle-changes-requested:
+    runs-on: ubuntu-latest
+    steps:
       - name: Reset Peer-reviewed label if changes are requested
         if: github.event.review.state == 'changes_requested'
         uses: actions-ecosystem/action-remove-labels@v1
