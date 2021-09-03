@@ -1,4 +1,4 @@
-name: Automate Ready for QA
+name: Automate PR sync
 
 on:
   pull_request:
