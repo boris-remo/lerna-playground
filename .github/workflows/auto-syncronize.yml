@@ -6,6 +6,26 @@ on:
       - synchronize
 
 jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: GITHUB CONTEXT
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: get commit message
+        run: |
+          echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
+      - name: show commit message
+        run: echo $commitmsg
+
+      - name: step1
+        if: contains( env.commitmsg , 'Merge master into' )
+        run: echo hello
+
   handle-push:
     runs-on: ubuntu-latest
     outputs:
