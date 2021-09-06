@@ -6,24 +6,30 @@ on:
 jobs:
   get-latest-commit:
     runs-on: ubuntu-latest
+    outputs:
+      message: echo "${{ steps.get-commit.outputs.message }}"
     steps:
+      - uses: actions/checkout@v2
+        with:
+          # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
+          fetch-depth: 1
       - name: View context attributes
         uses: actions/github-script@v4
         with:
-          result-encoding: string
-          script: |
-            console.log(context)
-            return context.payload.head_commit.message
+          script: console.log(context)
+
+      - id: get-commit
+        run: echo ::set-output name=push_commit_message::$(git log --format=%B -n 1 HEAD)
 
   log:
     needs: get-latest-commit
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{needs.get-latest-commit.outputs.result}}"
+      - run: echo "${{needs.get-latest-commit.outputs.message}}"
 
   auto-update:
     needs: get-latest-commit
-    if: "contains(needs.get-latest-commit.outputs.result, 'ci: version bump to')"
+    if: "contains(needs.get-latest-commit.outputs.message, 'ci: version bump to')"
     runs-on: ubuntu-latest
     steps:
       - uses: docker://chinthakagodawita/autoupdate-action:v1
