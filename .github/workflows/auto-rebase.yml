@@ -10,6 +10,8 @@ jobs:
       message: echo "${{ steps.get-commit.outputs.message }}"
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - name: View context attributes
         uses: actions/github-script@v4
         with:
