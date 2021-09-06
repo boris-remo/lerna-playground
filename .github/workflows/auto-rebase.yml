@@ -21,7 +21,7 @@ jobs:
         run: echo ::set-output name=push_commit_message::$(git log --format=%B -n 1 HEAD)
 
   auto-update:
-    if: "contains(needs.get-latest-commit.outputs.message, 'ci: version bump to')"
+    if: "contains(context.payload.head_commit.message, 'ci: version bump to')"
     runs-on: ubuntu-latest
     steps:
       - uses: docker://chinthakagodawita/autoupdate-action:v1
