@@ -10,6 +10,7 @@ jobs:
       - name: View context attributes
         uses: actions/github-script@v4
         with:
+          result-encoding: string
           script: |
             console.log(context)
             return context.payload.head_commit.message
