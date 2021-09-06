@@ -11,21 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
-          fetch-depth: 1
+          # for pull_request so we can do HEAD^2
+          fetch-depth: 2
+
       - name: View context attributes
         uses: actions/github-script@v4
         with:
           script: console.log(context)
 
       - id: get-commit
-        run: echo ::set-output name=push_commit_message::$(git log --format=%B -n 1 HEAD)
+        run: echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD)
 
   log:
     needs: get-latest-commit
     runs-on: ubuntu-latest
     steps:
       - run: echo "${{needs.get-latest-commit.outputs.message}}"
+      - run: echo "${{github.event.head_commit.message}}"
+      - run: echo "${{github.event.commits[0].message}}"
+      - run: echo "${{toJSON(github.event)}}"
 
   auto-update:
     needs: get-latest-commit
