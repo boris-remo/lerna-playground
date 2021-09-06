@@ -6,22 +6,17 @@ on:
 jobs:
   get-latest-commit:
     runs-on: ubuntu-latest
-    outputs:
-      message: echo "${{ steps.get-commit.outputs.message }}"
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
       - name: View context attributes
         uses: actions/github-script@v4
         with:
-          script: console.log(context)
-
-      - id: get-commit
-        run: echo ::set-output name=push_commit_message::$(git log --format=%B -n 1 HEAD)
+          script: |
+            console.log(context)
+            return context.payload.head_commit.message
 
   auto-update:
-    if: "contains(context.payload.head_commit.message, 'ci: version bump to')"
+    needs: get-latest-commit
+    if: "contains(needs.get-latest-commit.outputs.result, 'ci: version bump to')"
     runs-on: ubuntu-latest
     steps:
       - uses: docker://chinthakagodawita/autoupdate-action:v1
