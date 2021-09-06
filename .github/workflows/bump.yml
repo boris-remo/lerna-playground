@@ -26,7 +26,7 @@ jobs:
         with:
           skip-tag: 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RUN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN }}
 
       - name: 'cat package.json'
         run: cat ./package.json
