@@ -1,16 +1,22 @@
 {
   "name": "root",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.92",
   "workspaces": [
     "packages/a",
     "packages/b"
   ],
-  "scripts": {
-    "build": "node build.js"
-  },
   "devDependencies": {
-    "cz-conventional-changelog": "^3.3.0"
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.23.2"
+  },
+  "scripts": {
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "build": "node build.js",
+    "test:a": "jest --projects packages/a",
+    "test:b": "jest --projects packages/b"
   },
   "config": {
     "commitizen": {

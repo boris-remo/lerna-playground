@@ -1,0 +1,48 @@
+name: Automate PR sync
+
+on:
+  pull_request:
+    types:
+      - synchronize
+
+jobs:
+  get-commit-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v2
+        with:
+          # for pull_request so we can do HEAD^2
+          fetch-depth: 2
+
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD^2)
+      - run: echo "${{ steps.get_commit_message.outputs.commit_message  }}"
+
+    outputs:
+      commit_message: echo "${{ steps.get_commit_message.outputs.commit_message }}"
+
+  logs:
+    needs: get-commit-message
+    runs-on: ubuntu-latest
+    outputs:
+      is-ready: ${{ steps.check-labels.outcome }}
+    steps:
+      - name: View context attributes
+        uses: actions/github-script@v4
+        with:
+          script: console.log(context)
+      - run: echo "${{ needs.get-commit-message.outputs.commit_message }}"
+
+  dismiss-reviews:
+    needs: get-commit-message
+    if: "!contains(needs.get-commit-message.outputs.commit_message, 'Merge master into')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset Peer-reviewed label if changes are added
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: Peer-reviewed

@@ -1,0 +1,32 @@
+name: Automate Ready for QA
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+jobs:
+  qa-review:
+    runs-on: ubuntu-latest
+    outputs:
+      is-ready: ${{ steps.check-labels.outcome }}
+    steps:
+      - id: check-labels
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          none_of: QA-approved,QA-rejected
+          all_of: Peer-reviewed
+
+  ready-for-qa:
+    needs: qa-review
+    if: needs.qa-review.outputs.is-ready == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: Ready for QA

@@ -3,7 +3,7 @@
 const b = require("..");
 
 describe("b", () => {
-  it("works", () => {
+  it("Package B works", () => {
     b();
   });
 });
