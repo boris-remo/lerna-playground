@@ -7,7 +7,7 @@ on:
 
 jobs:
   handle-master-push:
-    if: "(github.eventName == 'push' && contains(github.event.head_commit.message, 'ci: version bump to')) || github.eventName == 'pull_request'"
+    if: "github.eventName == 'pull_request' || (github.eventName == 'push' && contains(github.event.head_commit.message, 'ci: version bump to'))"
     runs-on: ubuntu-latest
     steps:
       - name: Auto update PR branch
