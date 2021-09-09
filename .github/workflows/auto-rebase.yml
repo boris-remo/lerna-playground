@@ -15,7 +15,7 @@ jobs:
         run: |
           echo "$GITHUB_CONTEXT"
   handle-master-push:
-    if: "github.eventName == 'pull_request' || (github.eventName == 'push' && contains(github.event.head_commit.message, 'ci: version bump to'))"
+    if: "github.event_name == 'pull_request' || (github.event_name == 'push' && contains(github.event.head_commit.message, 'ci: version bump to'))"
     runs-on: ubuntu-latest
     steps:
       - name: Auto update PR branch
