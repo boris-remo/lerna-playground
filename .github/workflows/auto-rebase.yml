@@ -6,29 +6,24 @@ on:
     types: [labeled, unlabeled]
 
 jobs:
-  logs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump github context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
   handle-master-push:
-    if: "github.event_name == 'pull_request' || (github.event_name == 'push' && contains(github.event.head_commit.message, 'ci: version bump to'))"
+    env: 
+      VERSION_BUMP_COMMIT: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'ci: version bump to') }}
     runs-on: ubuntu-latest
     steps:
       - name: Auto update PR branch
         uses: docker://chinthakagodawita/autoupdate-action:v1
+        if: "github.event_name == 'pull_request' || ${{ env.VERSION_BUMP_COMMIT }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          GITHUB_TOKEN: '${{ secrets.ADMIN_ACCESS_TOKEN }}'
           PR_FILTER: 'labelled'
           PR_LABELS: 'qa-approved'
 
       - name: Auto label PRs with merge conflicts
+        if: ${{ env.VERSION_BUMP_COMMIT }}
         uses: mschilde/auto-label-merge-conflicts@master
         with:
           CONFLICT_LABEL_NAME: 'merge-conflict'
-          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_ACCESS_TOKEN }}
           MAX_RETRIES: 5
           WAIT_MS: 5000
