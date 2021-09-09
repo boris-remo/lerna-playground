@@ -6,11 +6,18 @@ on:
     types: [labeled, unlabeled]
 
 jobs:
-  handle-master-push:
-    # if: "github.eventName == 'pull_request' || (github.eventName == 'push' && contains(github.event.head_commit.message, 'ci: version bump to'))"
+  logs:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.eventName }}
+      - name: Dump github context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+  handle-master-push:
+    if: "github.eventName == 'pull_request' || (github.eventName == 'push' && contains(github.event.head_commit.message, 'ci: version bump to'))"
+    runs-on: ubuntu-latest
+    steps:
       - name: Auto update PR branch
         uses: docker://chinthakagodawita/autoupdate-action:v1
         env:
