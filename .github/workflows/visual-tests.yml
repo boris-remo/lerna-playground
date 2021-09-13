@@ -19,14 +19,14 @@ jobs:
       - name: View context attributes
         uses: actions/github-script@v4
         with:
-          script: console.log(context)
+          script: |
+            console.log(process.env);          
+            console.log(context);
 
       - name: Dump steps context
         env:
           STEPS_CONTEXT: ${{ toJson(steps) }}
         run: |
-          echo "${{ env.IS_PR }}"
-          echo "${{ env.IS_MASTER }}"
           echo "$STEPS_CONTEXT"
 
   should_visual_test:
