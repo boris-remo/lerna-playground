@@ -53,10 +53,6 @@ jobs:
             console.log('context', context)
             console.log('github', github)
 
-            if('${{ github.ref }}' == 'refs/heads/master') {
-              return 'true'
-            }
-
             const isReadyForQa = ${{steps.detect_client_changes.outputs.client }} && '${{steps.check-labels.outcome }}' == 'success'
             const isTriggeredByComment = ${{steps.detect_client_changes.outputs.client }} && ${{steps.happo_trigger.outputs.triggered}}
             return isReadyForQa || isTriggeredByComment
