@@ -2,7 +2,7 @@ name: Request Code Review
 
 on:
   workflow_run:
-    workflows: ['Install Dependencies', 'Test']
+    workflows: ['CI']
     branches-ignore: [master]
     types: [completed]
 
@@ -12,6 +12,11 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - name: View context attributes
+        uses: actions/github-script@v4
+        with:
+          script: console.log(context)
+
       - name: Request review based on files changes and/or groups the author belongs to
         uses: necojackarc/auto-request-review@v0.7.0
         with:
