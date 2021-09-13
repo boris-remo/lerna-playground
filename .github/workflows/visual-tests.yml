@@ -34,11 +34,13 @@ jobs:
     env:
       IS_MASTER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     outputs:
-      result: ${{ env.IS_MASTER || steps.determine_run.outputs.result }}
+      result: ${{ env.IS_MASTER == 'true' || steps.determine_run.outputs.result }}
     steps:
       - uses: actions/checkout@v2
+        if: ${{ env.IS_MASTER == 'false'}}
 
       - name: Check for client changes
+        if: ${{ env.IS_MASTER == 'false'}}
         id: detect_client_changes
         uses: dorny/paths-filter@v2
         with:
@@ -47,6 +49,7 @@ jobs:
               - 'client/**/*'
 
       - name: Check for required labels
+        if: ${{ env.IS_MASTER == 'false'}}
         id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
@@ -55,6 +58,7 @@ jobs:
           one_of: qa-approved,ready-for-qa
 
       - name: Pull request comment trigger for visual tests
+        if: ${{ env.IS_MASTER == 'false'}}
         uses: khan/pull-request-comment-trigger@master
         id: happo_trigger
         with:
@@ -64,6 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Determine happo run
+        if: ${{ env.IS_MASTER == 'false'}}
         uses: actions/github-script@v4
         id: determine_run
         with:
@@ -75,8 +80,7 @@ jobs:
 
   run-happo:
     needs: should_visual_test
-    if: ${{ needs.should_visual_test.outputs.result == 'true' || github.ref ==
-      'refs/heads/master' }}
+    if: ${{ needs.should_visual_test.outputs.result == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -113,8 +117,7 @@ jobs:
 
   skip-happo:
     needs: should_visual_test
-    if: ${{ needs.should_visual_test.outputs.result == 'false' && github.ref !=
-      'refs/heads/master'}}
+    if: ${{ needs.should_visual_test.outputs.result == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
