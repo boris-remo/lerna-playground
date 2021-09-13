@@ -27,7 +27,7 @@ jobs:
 
       - name: Check for required labels
         id: check-labels
-        if: github.ref != 'refs/heads/master'
+        if: ${{ github.ref != 'refs/heads/master' }}
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -37,7 +37,7 @@ jobs:
       - name: Pull request comment trigger for visual tests
         uses: khan/pull-request-comment-trigger@master
         id: happo_trigger
-        if: github.ref != 'refs/heads/master'
+        if: ${{ github.ref != 'refs/heads/master' }}
         with:
           trigger: '@run-happo'
           reaction: '+1'
