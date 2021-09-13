@@ -50,7 +50,7 @@ jobs:
 
       - name: Console logging event name
         run: |
-          echo "event_name:  ${{github.event_name}}"
+          echo "event_name:  ${{env.IS_MASTER}}"
 
       - name: Check for required labels
         if: ${{ github.event_name != 'issue_comment' }}
