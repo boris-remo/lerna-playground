@@ -32,10 +32,9 @@ jobs:
   should_visual_test:
     runs-on: ubuntu-latest
     env:
-      IS_PR: "github.event_name == 'pull_request'"
-      IS_MASTER: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
+      IS_MASTER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     outputs:
-      result: ${{ steps.determine_run.outputs.result }}
+      result: ${{ env.IS_MASTER || steps.determine_run.outputs.result }}
     steps:
       - uses: actions/checkout@v2
 
