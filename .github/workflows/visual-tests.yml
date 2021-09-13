@@ -50,8 +50,11 @@ jobs:
         with:
           result-encoding: string
           script: |
-            if(${{ github.ref }}  == 'refs/heads/master') {
-              return true
+            console.log('context', context)
+            console.log('github', github)
+
+            if('${{ github.ref }}' == 'refs/heads/master') {
+              return 'true'
             }
 
             const isReadyForQa = ${{steps.detect_client_changes.outputs.client }} && '${{steps.check-labels.outcome }}' == 'success'
