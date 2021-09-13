@@ -1,18 +1,19 @@
 name: Run visual tests
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
-    types: [ready_for_review, synchronize, opened]
+    types: [synchronize, labeled]
+  push:
+    branches: [master]
+  issue_comment:
+    types: [created]
 
 jobs:
-  CheckClientChanges:
-    if: github.event.pull_request.draft == false
+  should_visual_test:
     runs-on: ubuntu-latest
     outputs:
-      client: ${{ steps.detect_client_changes.outputs.client }}
+      result: ${{ steps.determine_run.outputs.result }}
     steps:
       - uses: actions/checkout@v2
 
@@ -23,10 +24,105 @@ jobs:
           filters: |
             client:
               - 'client/**/*'
-  SkipHappo:
-    needs: CheckClientChanges
-    if: ${{ needs.CheckClientChanges.outputs.client == 'false' }}
+
+      - name: Check for required labels
+        id: check-labels
+        if: github.ref != 'refs/heads/master'
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          all_of: peer-approved
+          one_of: qa-approved,ready-for-qa
+
+      - name: Pull request comment trigger for visual tests
+        uses: khan/pull-request-comment-trigger@master
+        id: happo_trigger
+        if: github.ref != 'refs/heads/master'
+        with:
+          trigger: '@run-happo'
+          reaction: '+1'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine happo run
+        uses: actions/github-script@v4
+        id: determine_run
+        with:
+          result-encoding: string
+          script: |
+            if(${{ github.ref }}  == 'refs/heads/master') {
+              return true
+            }
+
+            const isReadyForQa = ${{steps.detect_client_changes.outputs.client }} && '${{steps.check-labels.outcome }}' == 'success'
+            const isTriggeredByComment = ${{steps.detect_client_changes.outputs.client }} && ${{steps.happo_trigger.outputs.triggered}}
+            return isReadyForQa || isTriggeredByComment
+
+  run-happo:
+    needs: should_visual_test
+    if: needs.should_visual_test.outputs.result == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate with GitHub package registry
+        run: echo "//npm.pkg.github.com/:_authToken=${{
+          secrets.PRIVATE_REPO_ACCESS_TOKEN }}" > ~/.npmrc
+
+      - name: Install dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: GCloud Auth
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{secrets.GCLOUD_ENC_KEY_AUTOMATION}}
+          export_default_credentials: true
+
+      - name: Grab client .env
+        uses: actions/github-script@v3.1.0
+        id: get-env
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/buildEnv.js`)
+            await script(github, context, core, '${{secrets.PROJECT_ID_AUTOMATION}}', 'test')
+
+      - name: Move test-client.env => client/.env
+        run: mv test-client.env client/.env
+
+      - name: Happo
+        working-directory: ./client
+        run: npx happo-ci-github-actions
+        env:
+          HAPPO_API_KEY: ${{ secrets.HAPPO_API_KEY }}
+          HAPPO_API_SECRET: ${{ secrets.HAPPO_API_SECRET }}
+
+  skip-happo:
+    needs: should_visual_test
+    if: needs.should_visual_test.outputs.result == 'false'
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "${{ needs.CheckClientChanges.outputs.client }}"
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute Happo Hash
+        id: compute_happo_hash
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/computeHappoHash.js`);
+            return script(
+              "${{ secrets.HAPPO_API_KEY }}",
+              "${{ secrets.HAPPO_API_SECRET }}",
+            );
+
+      - name: Skip Happo
+        run: |
+          echo "Skipping Happo tests because no files in client/ have been updated or Ready for QA label has not been added yet"
+          curl -H "Authorization: Basic ${{ steps.compute_happo_hash.outputs.result }}" -X POST https://happo.io/api/skip/${{ github.event.pull_request.head.sha }}
