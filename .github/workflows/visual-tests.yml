@@ -12,8 +12,9 @@ on:
 jobs:
   logs:
     runs-on: ubuntu-latest
-    outputs:
-      is-ready: ${{ steps.check-labels.outcome }}
+    env:
+      IS_PR: "github.event_name == 'pull_request'"
+      IS_MASTER: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
     steps:
       - name: View context attributes
         uses: actions/github-script@v4
@@ -24,10 +25,15 @@ jobs:
         env:
           STEPS_CONTEXT: ${{ toJson(steps) }}
         run: |
+          echo "$IS_PR"
+          echo "$IS_MASTER"
           echo "$STEPS_CONTEXT"
 
   should_visual_test:
     runs-on: ubuntu-latest
+    env:
+      IS_PR: "github.event_name == 'pull_request'"
+      IS_MASTER: "github.event_name == 'push' && github.ref == 'refs/heads/master'"
     outputs:
       result: ${{ steps.determine_run.outputs.result }}
     steps:
