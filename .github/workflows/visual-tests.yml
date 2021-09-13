@@ -10,6 +10,23 @@ on:
     types: [created]
 
 jobs:
+  logs:
+    needs: get-commit-message
+    runs-on: ubuntu-latest
+    outputs:
+      is-ready: ${{ steps.check-labels.outcome }}
+    steps:
+      - name: View context attributes
+        uses: actions/github-script@v4
+        with:
+          script: console.log(context)
+
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: |
+          echo "$STEPS_CONTEXT"
+
   should_visual_test:
     runs-on: ubuntu-latest
     outputs:
@@ -24,6 +41,7 @@ jobs:
           filters: |
             client:
               - 'client/**/*'
+
       - name: Check for required labels
         id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
