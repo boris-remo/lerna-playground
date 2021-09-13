@@ -20,7 +20,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            console.log(process.env);          
+            console.log(process.env);
             console.log(context);
 
       - name: Dump steps context
@@ -47,6 +47,10 @@ jobs:
           filters: |
             client:
               - 'client/**/*'
+
+      - name: Console logging event name
+        run: |
+          echo "event_name:  ${{github.event_name}}"
 
       - name: Check for required labels
         if: ${{ env.IS_MASTER == 'false'}}
