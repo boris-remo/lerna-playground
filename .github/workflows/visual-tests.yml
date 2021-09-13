@@ -25,8 +25,8 @@ jobs:
         env:
           STEPS_CONTEXT: ${{ toJson(steps) }}
         run: |
-          echo "$IS_PR"
-          echo "$IS_MASTER"
+          echo "${{ env.IS_PR }}"
+          echo "${{ env.IS_MASTER }}"
           echo "$STEPS_CONTEXT"
 
   should_visual_test:
