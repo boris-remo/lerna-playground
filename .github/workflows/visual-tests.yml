@@ -50,10 +50,10 @@ jobs:
 
       - name: Console logging event name
         run: |
-          echo "event_name:  ${{env.IS_MASTER}}"
+          echo "event_name:  ${{ env.IS_MASTER == 'false' }}"
 
       - name: Check for required labels
-        if: ${{ github.event_name != 'issue_comment' }}
+        if: ${{ github.event_name != 'issue_comment' || env.IS_MASTER == 'false' }}
         id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
