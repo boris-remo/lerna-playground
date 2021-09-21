@@ -3,11 +3,6 @@ on:
   pull_request:
     types:
       - labeled
-      - unlabeled
-      - synchronize
-  check_suite:
-    types:
-      - completed
 jobs:
   automerge:
     runs-on: ubuntu-latest
@@ -16,3 +11,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
+          MERGE_DELETE_BRANCH: true
