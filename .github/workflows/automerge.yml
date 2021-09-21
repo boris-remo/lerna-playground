@@ -1,6 +1,6 @@
 name: automerge
 on:
-  pull_request_target:
+  pull_request:
     types:
       - labeled
       - unlabeled
@@ -8,16 +8,15 @@ jobs:
   automerge:
     runs-on: ubuntu-latest
     steps:
-      # - uses: pascalgn/automerge-action@v0.14.3
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ADMIN }}
-      #     MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
-      #     MERGE_DELETE_BRANCH: true
-      #     MERGE_REQUIRED_APPROVALS: 0
+      - uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          MERGE_LABELS: 'peer-approved, qa-approved, !DO NOT MERGE'
+          MERGE_DELETE_BRANCH: true
 
       - uses: reitermarkus/automerge@v1.5.2
         with:
           token: ${{ secrets.ADMIN }}
           do-not-merge-labels: DO NOT MERGE
           required-labels: qa-approved
-          dry-run: false
+          dry-run: true
