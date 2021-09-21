@@ -47,7 +47,7 @@ jobs:
         if: ${{ steps.approved.outputs.triggered == 'true' }}
         with:
           github_token: '${{ secrets.GITHUB_TOKEN }}'
-          labels: 'QA Approved'
+          labels: 'qa-approved'
 
   record_rejection:
     runs-on: ubuntu-latest
@@ -91,4 +91,4 @@ jobs:
         if: ${{ steps.rejected.outputs.triggered == 'true' }}
         with:
           github_token: '${{ secrets.GITHUB_TOKEN }}'
-          labels: 'QA Rejected'
+          labels: 'qa-rejected'
