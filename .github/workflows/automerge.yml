@@ -14,3 +14,10 @@ jobs:
           MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
           MERGE_DELETE_BRANCH: true
           MERGE_REQUIRED_APPROVALS: 0
+
+      - uses: reitermarkus/automerge@v2
+        with:
+          token: ${{ secrets.ADMIN }}
+          do-not-merge-labels: DO NOT MERGE
+          required-labels: qa-approved
+          dry-run: true
