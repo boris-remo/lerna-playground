@@ -1,23 +1,16 @@
 name: automerge
 on:
-  pull_request_target:
-    types:
-      - labeled
-      - unlabeled
+  workflow_run:
+    workflows: ['Test', 'CI']
+    types: [completed]
+    branches-ignore: ['master']
 jobs:
   automerge:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      # - uses: pascalgn/automerge-action@v0.14.3
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.ADMIN }}
-      #     MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
-      #     MERGE_DELETE_BRANCH: true
-      #     MERGE_REQUIRED_APPROVALS: 0
-
-      - uses: reitermarkus/automerge@v1.5.2
-        with:
-          token: ${{ secrets.ADMIN }}
-          do-not-merge-labels: DO NOT MERGE
-          required-labels: qa-approved
-          dry-run: false
+      - uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
+          MERGE_DELETE_BRANCH: true
