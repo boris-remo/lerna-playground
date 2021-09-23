@@ -16,3 +16,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ADMIN }}
           MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
           MERGE_DELETE_BRANCH: true
+          MERGE_METHOD: 'squash'
+          UPDATE_METHOD: 'merge'
