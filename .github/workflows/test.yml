@@ -27,22 +27,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - run: cd ./${{ matrix.directory }} && npm ci
-      - run: cd ./${{ matrix.directory }} && npm run test
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: unit-test-coverage
-          path: ${{ matrix.directory }}/coverage
-
-  Coverage:
-    needs: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: unit-test-coverage
-
-      - shell: bash
-        run: |
-          ls
+      - run: npm ci
+        working-directory: ${{ matrix.directory }}
+      - run: npm run test
+        working-directory: ${{ matrix.directory }}
