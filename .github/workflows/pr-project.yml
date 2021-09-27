@@ -1,12 +1,5 @@
 name: Handle PR or issue open
 
-env:
-  ORG_NAME: remo-co
-  PROJECT_ID: 12876151
-  PROJECT_NAME: Remo Engineering
-  ISSUE_COLUMN_NAME: Backlog
-  PR_COLUMN_NAME: In Progress
-
 on:
   pull_request:
     types: [opened, reopened]
