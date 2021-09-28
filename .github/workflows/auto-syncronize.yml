@@ -34,8 +34,10 @@ jobs:
             const formattedCommitMessage = commitMessage.toLowerCase()
             console.log('formattedCommitMessage', formattedCommitMessage)
 
+            const isMasterMerge = formattedCommitMessage.includes('merge') || formattedCommitMessage.includes('master')
+            console.log('isMasterMerge', isMasterMerge)
 
-            if (formattedCommitMessage.includes('Merge') || formattedCommitMessage.includes('master')) {
+            if (isMasterMerge) {
               return false
             }
             return true
