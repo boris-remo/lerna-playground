@@ -22,7 +22,7 @@ jobs:
 
       - run: echo "${{ steps.get_commit_message.outputs.commit_message }}"
 
-      - id: detect_changes
+      - id: is_branch_update
         uses: actions/github-script@v5
         env:
           commitMessage: ${{ steps.get_commit_message.outputs.commit_message }}
@@ -37,10 +37,7 @@ jobs:
             const isMasterMerge = formattedCommitMessage.includes('merge') || formattedCommitMessage.includes('master')
             console.log('isMasterMerge', isMasterMerge)
 
-            if (isMasterMerge) {
-              return false
-            }
-            return true
+            return isMasterMerge
 
       - name: View context attributes
         uses: actions/github-script@v5
@@ -53,10 +50,10 @@ jobs:
         run: |
           echo "$STEPS_CONTEXT"
 
-      - run: echo ${{ steps.detect_changes.outputs.result }}
+      - run: echo ${{ steps.is_branch_update.outputs.result }}
 
       - name: Remove peer-approved label if changes are added
-        if: steps.detect_changes.outputs.result
+        if: ${{ steps.is_branch_update.outputs.result == false }}
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
@@ -70,14 +67,14 @@ jobs:
           labels: ready-for-qa
 
       - name: Remove qa-approved label if changes are added
-        if: steps.detect_changes.outputs.result
+        if: ${{ steps.is_branch_update.outputs.result == false }}
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
           labels: qa-approved
 
       - name: Remove qa-rejected label if changes are added
-        if: steps.detect_changes.outputs.result
+        if: ${{ steps.is_branch_update.outputs.result == false }}
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
