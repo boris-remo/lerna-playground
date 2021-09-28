@@ -18,16 +18,30 @@ jobs:
       - name: Get commit message
         id: get_commit_message
         run: |
-          if   [[ '${{ github.event_name }}' == 'push' ]]; then
-            echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD)
-          elif [[ '${{ github.event_name }}' == 'pull_request' ]]; then
-            echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD^2)
-          fi
+          echo ::set-output name=commit_message::$(git log --format=%B -n 1 HEAD^2)
 
       - run: echo "${{ steps.get_commit_message.outputs.commit_message }}"
 
+      - id: detect_changes
+        uses: actions/github-script@v5
+        env:
+          commitMessage: ${{ steps.get_commit_message.outputs.commit_message }}
+        with:
+          script: |
+            const { commitMessage } = process.env
+            console.log('commitMessage', commitMessage)
+
+            const formattedCommitMessage = commitMessage.toLowerCase()
+            console.log('formattedCommitMessage', formattedCommitMessage)
+
+
+            if (formattedCommitMessage.includes('Merge') || formattedCommitMessage.includes('master')) {
+              return false
+            }
+            return true
+
       - name: View context attributes
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           script: console.log(context)
 
@@ -40,24 +54,28 @@ jobs:
       - run: echo ${{ github.event.head_commit.message }}
 
       - name: Remove peer-approved label if changes are added
+
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
           labels: peer-approved
 
       - name: Remove ready-for-qa label if changes are added
+
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
           labels: ready-for-qa
 
       - name: Remove qa-approved label if changes are added
+
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
           labels: qa-approved
 
       - name: Remove qa-rejected label if changes are added
+
         uses: actions-ecosystem/action-remove-labels@v1
         with:
           github_token: ${{ secrets.ADMIN }}
