@@ -12,23 +12,23 @@ jobs:
       - name: Remove peer-approved label if changes are added
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.ADMIN }}
           labels: peer-approved
 
       - name: Remove ready-for-qa label if changes are added
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.ADMIN }}
           labels: ready-for-qa
 
       - name: Remove qa-approved label if changes are added
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.ADMIN }}
           labels: qa-approved
 
       - name: Remove qa-rejected label if changes are added
         uses: actions-ecosystem/action-remove-labels@v1
         with:
-          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+          github_token: ${{ secrets.ADMIN }}
           labels: qa-rejected
