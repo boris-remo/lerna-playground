@@ -7,8 +7,16 @@ on:
 jobs:
   dismiss-reviews:
     runs-on: ubuntu-latest
-    if: "!(contains(github.event.head_commit.message, 'Merge') && contains(github.event.head_commit.message, 'master'))"
+    # if: "!(contains(github.event.head_commit.message, 'Merge') && contains(github.event.head_commit.message, 'master'))"
     steps:
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$STEPS_CONTEXT"
+
+      - run: echo ${{ github.event.head_commit.message }}
+
       - name: Remove peer-approved label if changes are added
         uses: actions-ecosystem/action-remove-labels@v1
         with:
