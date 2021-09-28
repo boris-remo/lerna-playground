@@ -1,8 +1,8 @@
 name: Automate PR synchronize
 
 on:
-  pull_request:
-    types: [synchronize]
+  push:
+    branches-ignore: [master]
 
 jobs:
   dismiss-reviews:
