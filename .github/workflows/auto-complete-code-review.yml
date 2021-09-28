@@ -1,0 +1,44 @@
+name: Automate PR reviews
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  handle-approval:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Peer-reviewed label when PR is approved
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: Peer-reviewed
+
+  handle-changes-requested:
+    if: github.event.review.state == 'changes_requested'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset Peer-reviewed label if changes are requested
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: Peer-reviewed
+
+      - name: Reset Ready for QA label if changes are requested
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: Ready for QA
+
+      - name: Reset QA-approved label if changes are requested
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: QA-approved
+
+      - name: Reset QA-rejected label if changes are requested
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          github_token: ${{ secrets.WORKFLOW_RUN }}
+          labels: QA-rejected

@@ -1,14 +1,15 @@
-name: Automatic Rebase
-
+name: Auto update branch
 on:
   push:
     branches: [master]
 
 jobs:
-  Auto:
-    name: Auto-update
-    runs-on: ubuntu-latest
+  auto-update:
+    name: autoupdate
+    runs-on: ubuntu-18.04
     steps:
-      - uses: tibdex/auto-update@v2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker://chinthakagodawita/autoupdate-action:v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RUN }}
+          PR_FILTER: 'labelled'
+          PR_LABELS: 'Ready for QA'

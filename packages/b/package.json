@@ -22,7 +22,8 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "scripts": {
-    "test": "jest --collectCoverage --coverageDirectory coverage/b --coverageReporters lcov"
+    "lint": "eslint .",
+    "test": "jest"
   },
   "bugs": {
     "url": "https://github.com/boris-remo/lerna-playground/issues"
