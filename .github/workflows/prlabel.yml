@@ -46,8 +46,8 @@ jobs:
       - uses: actions-ecosystem/action-add-labels@v1
         if: ${{ steps.approved.outputs.triggered == 'true' }}
         with:
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          labels: 'QA Approved'
+          github_token: '${{ secrets.ADMIN }}'
+          labels: 'qa-approved'
 
   record_rejection:
     runs-on: ubuntu-latest
@@ -90,5 +90,5 @@ jobs:
       - uses: actions-ecosystem/action-add-labels@v1
         if: ${{ steps.rejected.outputs.triggered == 'true' }}
         with:
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          labels: 'QA Rejected'
+          github_token: '${{ secrets.ADMIN }}'
+          labels: 'qa-rejected'

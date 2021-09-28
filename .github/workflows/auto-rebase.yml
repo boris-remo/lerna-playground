@@ -1,15 +1,31 @@
-name: Auto update branch
+name: Handle push to master
 on:
   push:
     branches: [master]
+  pull_request:
+    types: [labeled, unlabeled]
 
 jobs:
-  auto-update:
-    name: autoupdate
-    runs-on: ubuntu-18.04
+  handle-master-push:
+    env:
+      IS_PR: "github.event_name == 'pull_request'"
+      IS_VERSION_BUMP_COMMIT: "github.event_name == 'push' && contains(github.event.head_commit.message, 'ci: version bump to')"
+    runs-on: ubuntu-latest
     steps:
-      - uses: docker://chinthakagodawita/autoupdate-action:v1
+      - name: Auto update PR branch
+        continue-on-error: true
+        uses: docker://chinthakagodawita/autoupdate-action:v1
+        if: ${{ env.IS_PR }} || ${{ env.IS_VERSION_BUMP_COMMIT }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_RUN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN }}
           PR_FILTER: 'labelled'
-          PR_LABELS: 'Ready for QA'
+          PR_LABELS: 'qa-approved'
+
+      - name: Auto label PRs with merge conflicts
+        if: ${{ env.IS_VERSION_BUMP_COMMIT }}
+        uses: mschilde/auto-label-merge-conflicts@master
+        with:
+          CONFLICT_LABEL_NAME: 'merge-conflict'
+          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          MAX_RETRIES: 5
+          WAIT_MS: 5000

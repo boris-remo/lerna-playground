@@ -1,82 +1,15 @@
-name: Pull Request Project Check
+name: Handle PR or issue open
 
 on:
   pull_request:
-    types: [opened, edited, reopened]
+    types: [opened, reopened]
   issues:
-    types: [opened, edited, reopened]
+    types: [opened, reopened]
 
 jobs:
   project-check:
     runs-on: ubuntu-latest
     steps:
-      - name: View context attributes
-        uses: actions/github-script@v4
+      - uses: JulienKode/team-labeler-action@v0.1.0
         with:
-          script: console.log(context)
-
-      - id: issue-number
-        uses: actions/github-script@v4
-        with:
-          result-encoding: string
-          script: |
-            const number = context.eventName === 'pull_request' ? context.payload.pull_request.number : context.payload.issue.number
-            console.log('number', number)
-            return number
-
-      # - id: project-check
-      #   uses: actions/github-script@v4
-      #   with:
-      #     github-token: ${{ secrets.PAT }}
-      #     result-encoding: string
-      #     script: |
-      #       const {data: columns} = await github.projects.listColumns({
-      #         project_id: 13011876,
-      #       });
-
-      #       console.log('columns', columns);
-
-      #       const cards = await Promise.all(columns.map(async ({ id }) => {
-      #         const {data: columnCards} = await github.projects.listCards({
-      #           column_id: id,
-      #         });
-
-      #         console.log("columnCards.length", columnCards.length);
-      #         console.log("columnCards", columnCards);
-
-      #         return columnCards
-      #       }));
-
-      #       console.log("cards.length", cards.length);
-      #       console.log("cards", cards);
-
-      #       const isInProject = cards.flat().some(({ content_url }) => {
-      #         const contentURLNumber = content_url.split("/")[7];
-      #         console.log("contentURLNumber :", contentURLNumber);
-
-      #         return contentURLNumber == ${{ steps.issue-number.outputs.result }};
-      #       });
-
-      #       console.log("steps.issue-number.outputs.result", ${{ steps.issue-number.outputs.result }});
-      #       console.log("isInProject", isInProject);
-
-      #       return isInProject
-
-      - name: Create Project Card
-        id: create-card
-        uses: peter-evans/create-or-update-project-card@v1
-        with:
-          token: ${{ secrets.PAT }}
-          project-location: borisremo
-          project-name: test
-          column-name: To Do
-          issue-number: ${{ steps.issue-number.outputs.result }}
-
-      - name: Create comment
-        if: steps.issue-number.outputs.result
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ steps.issue-number.outputs.result }}
-          body: |
-            @${{ github.actor }}
-            I noticed you forgot to link to our project, so I added it for you - https://github.com/orgs/borisremo/projects/1#card-${{ steps.create-card.outputs.card-id }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
