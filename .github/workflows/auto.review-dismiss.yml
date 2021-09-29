@@ -1,0 +1,15 @@
+name: Automate PR review dismissals
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove changes requested label
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: changes-requested
+          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
