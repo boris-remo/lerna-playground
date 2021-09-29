@@ -1,8 +1,8 @@
-name: Automate PR review request
+name: Automate PR review dismissals
 
 on:
-  pull_request:
-    types: [review_requested]
+  pull_request_review:
+    types: [dismissed]
 
 jobs:
   main:
