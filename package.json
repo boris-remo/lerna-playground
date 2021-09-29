@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "1.0.148",
+  "version": "1.0.149",
   "workspaces": [
     "packages/a",
     "packages/b"
