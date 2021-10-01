@@ -1,0 +1,172 @@
+name: Handle label changes
+
+on:
+  pull_request:
+    types: [labeled, unlabeled]
+  workflow_run:
+    workflows: ['Pull Request Quality']
+    types: [completed]
+    branches-ignore: ['master']
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      # Ready for QA automation
+      - name: Check for QA review labels
+        id: is-qa-reviewed
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        continue-on-error: true
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          one_of: qa-approved,qa-rejected
+
+      - name: Check for peer approval label
+        id: is-peer-approved
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        continue-on-error: true
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          all_of: peer-approved
+
+      - name: Check Code Quality CI success status
+        id: check-ci-code-quality
+        continue-on-error: true
+        uses: LASER-Yi/workflow-status@v0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ci.code-quality.yml
+          branch: ${{ github.head_ref }}
+
+      - name: Check PR quality CI success status
+        id: check-ci-pr-quality
+        continue-on-error: true
+        uses: LASER-Yi/workflow-status@v0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ci.pr-quality.yml
+          branch: ${{ github.head_ref }}
+
+      - name: Check system-check-utils unit test CI success status
+        id: check-ci-test-system-check-utils
+        continue-on-error: true
+        uses: LASER-Yi/workflow-status@v0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ci.test-system-check-utils.yml
+          branch: ${{ github.head_ref }}
+
+      - name: Check cloud function unit test CI success status
+        id: check-ci-test-cloud-functions
+        continue-on-error: true
+        uses: LASER-Yi/workflow-status@v0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ci.test-cloud-functions.yml
+          branch: ${{ github.head_ref }}
+
+      - name: Check client and server unit test CI success status
+        id: check-ci-test-client-server
+        continue-on-error: true
+        uses: LASER-Yi/workflow-status@v0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ci.test-client-server.yml
+          branch: ${{ github.head_ref }}
+
+      - name: Determine if PR is ready for QA
+        id: is-ready-for-qa
+        continue-on-error: true
+        uses: actions/github-script@v5
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        with:
+          result-encoding: string
+          script: |
+            const steps = JSON.parse(process.env.STEPS_CONTEXT);
+
+            const isPeerApproved = steps['is-peer-approved'].outcome == 'success'
+            const isCodeQualitySuccessful = steps['check-ci-code-quality'].outputs.conclusion == 'success'
+            const isPrQualitySuccessful = steps['check-ci-pr-quality'].outputs.conclusion == 'success'
+            const isSystemCheckUtilsTestSuccessful = steps['check-ci-test-system-check-utils'].outputs.conclusion == 'success'
+            const isCloudFunctionsTestSuccessful = steps['check-ci-test-cloud-functions'].outputs.conclusion == 'success'
+            const isClientServerTestSuccessful = steps['check-ci-test-client-server'].outputs.conclusion == 'success'
+
+            const isReadyForQa = isPeerApproved && isCodeQualitySuccessful && isPrQualitySuccessful && isSystemCheckUtilsTestSuccessful && isCloudFunctionsTestSuccessful && isClientServerTestSuccessful
+
+            if(isReadyForQa) {
+              return 'true'  
+            }
+
+            return `
+              - isPeerApproved: ${ isPeerApproved }
+              - isCodeQualitySuccessful: ${ isCodeQualitySuccessful }
+              - isPrQualitySuccessful: ${ isPrQualitySuccessful }
+              - isSystemCheckUtilsTestSuccessful: ${ isSystemCheckUtilsTestSuccessful }
+              - isCloudFunctionsTestSuccessful: ${ isCloudFunctionsTestSuccessful }
+              - isClientServerTestSuccessful: ${ isClientServerTestSuccessful }
+            `
+
+      - name: Add ready-for-qa label
+        if: steps.is-qa-reviewed.outcome != 'success' && steps.is-ready-for-qa.outputs.result == 'true'
+        continue-on-error: true
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: ready-for-qa
+          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+
+      - name: Alert author that PR is not ready for QA
+        if: steps.is-qa-reviewed.outcome != 'success' && steps.is-ready-for-qa.outputs.result != 'true'
+        continue-on-error: true
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: comment
+          message: |
+            This PR is not ready for QA because: ${{ steps.is-ready-for-qa.outputs.result }}
+
+      - name: Delete alert when ready for QA or QA review completed
+        if: steps.is-qa-reviewed.outcome == 'success' || steps.is-ready-for-qa.outputs.result == 'true'
+        continue-on-error: true
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: comment
+          delete: true
+          message: |
+            This PR has been reviewed by a QA engineer
+
+      # Merge conflict automation
+      - name: Check for merge conflict label
+        id: has-merge-conflicts
+        uses: docker://agilepathway/pull-request-label-checker:latest
+        continue-on-error: true
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          all_of: merge-conflict
+
+      - name: Remove ready-for-qa label on merge conflict
+        if: steps.has-merge-conflicts.outcome == 'success'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: ready-for-qa
+          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+
+      - name: Remove qa-approved label on merge conflict
+        if: steps.has-merge-conflicts.outcome == 'success'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: qa-approved
+          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+
+      - name: Remove qa-rejected label on merge conflict
+        if: steps.has-merge-conflicts.outcome == 'success'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: qa-rejected
+          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+
+      - name: Remove peer-approved label on merge conflict
+        if: steps.has-merge-conflicts.outcome == 'success'
+        uses: actions-ecosystem/action-remove-labels@v1
+        with:
+          labels: peer-approved
+          github_token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
