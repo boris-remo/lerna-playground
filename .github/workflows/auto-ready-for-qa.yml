@@ -36,3 +36,4 @@ jobs:
         with:
           workflow: Run visual tests
           token: ${{ secrets.ADMIN }}
+          ref: ${{ github.event.pull_request.head.ref }}
