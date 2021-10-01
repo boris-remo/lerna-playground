@@ -35,4 +35,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Run visual tests
-          token: ${{ secrets.TRIGGER_WORKFLOW_TOKEN }}
+          token: ${{ secrets.ADMIN }}
