@@ -30,3 +30,10 @@ jobs:
       - uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: Ready for QA
+
+      - name: Run visual tests
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Run visual tests
+          token: ${{ secrets.ADMIN }}
+          ref: ${{ github.event.pull_request.head.ref }}
