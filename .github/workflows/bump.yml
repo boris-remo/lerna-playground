@@ -28,7 +28,7 @@ jobs:
           push: false
           PACKAGEJSON_DIR: packages/a
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: cat ./packages/a/package.json
 
@@ -41,7 +41,7 @@ jobs:
         with:
           skip-tag: 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'cat package.json'
         run: cat ./package.json
