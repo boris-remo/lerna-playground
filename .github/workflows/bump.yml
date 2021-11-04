@@ -1,29 +1,28 @@
-name: Bump Version
+name: 'Bump Version'
 
 on:
   push:
     branches:
-      - master
+      - 'master'
 
 jobs:
   bump-version:
     runs-on: ubuntu-latest
     steps:
-      - name: log
+      - name: 'log'
         run: echo '${{ github.event_name }}'
 
-      - name: Checkout source code
-        uses: actions/checkout@v2
+      - name: 'Checkout source code'
+        uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
           token: ${{ secrets.ADMIN }}
 
-      - name: cat packages/a/package.json
-        run: cat ./packages/a/package.json
+      - run: cat ./packages/a/package.json
 
-      - name: Bump package a
+      - name: 'Bump package a'
         id: version-bump-a
-        uses: phips28/gh-action-bump-version@master
+        uses: 'phips28/gh-action-bump-version@master'
         with:
           skip-tag: true
           push: false
@@ -31,19 +30,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN }}
 
-      - name: cat packages/a/package.json
-        run: cat ./packages/a/package.json
+      - run: cat ./packages/a/package.json
 
-      - name: cat package.json
+      - name: 'cat package.json'
         run: cat ./package.json
 
-      - name: Bump root version
+      - name: 'Automated Version Bump'
         id: version-bump
-        uses: phips28/gh-action-bump-version@master
+        uses: 'phips28/gh-action-bump-version@master'
         with:
-          skip-tag: true
+          skip-tag: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.ADMIN }}
 
-      - name: cat package.json
+      - name: 'cat package.json'
         run: cat ./package.json
