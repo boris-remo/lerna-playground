@@ -12,3 +12,4 @@ const b = require('b');
 
 bb
 b
+b
