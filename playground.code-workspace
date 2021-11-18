@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "name": "Package A",
+      "path": "packages/a"
+    },
+    {
+      "name": "Package B",
+      "path": "packages/b"
+    },
+    {
+      "name": "Documentation",
+      "path": "docs"
+    }
+  ],
+  "settings": {
+    "jest.disabledWorkspaceFolders": ["Documentation"]
+  }
+}

@@ -16,7 +16,21 @@ jobs:
         uses: 'actions/checkout@v2'
         with:
           ref: ${{ github.ref }}
-          token: ${{ secrets.ADMIN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: cat ./packages/a/package.json
+
+      - name: 'Bump package a'
+        id: version-bump-a
+        uses: 'phips28/gh-action-bump-version@master'
+        with:
+          skip-tag: true
+          push: false
+          PACKAGEJSON_DIR: packages/a
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN }}
+
+      - run: cat ./packages/a/package.json
 
       - name: 'cat package.json'
         run: cat ./package.json
