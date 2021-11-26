@@ -2,7 +2,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - before: npm i npm@7
+  - before: npm i -g npm@7
     init: npm install
 
 github:
