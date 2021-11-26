@@ -2,9 +2,12 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - before: npm i -g npm@7
-    init: npm install
+  - name: NPM
+    command: npm i -g npm@7 && gp sync-done npm
 
+  - name: Deps
+    before: gp sync-await npm
+    command: npm i
 github:
   prebuilds:
     addCheck: true
