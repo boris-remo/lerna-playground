@@ -4,4 +4,4 @@ RUN bash -c ". .nvm/nvm.sh && nvm install 14 && nvm use 14 && nvm alias default 
 
 RUN echo "nvm use default &>/dev/null" >> ~/.bashrc.d/51-nvm-fix
 
-RUN npm install -g npm@7
+RUN npm install --unsafe-perm -g npm@7 
