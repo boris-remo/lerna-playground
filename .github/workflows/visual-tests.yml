@@ -63,7 +63,7 @@ jobs:
 
   run-happo:
     needs: should_visual_test
-    if: ${{ needs.should_visual_test.outputs.result == true }}
+    if: ${{ needs.should_visual_test.outputs.result == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -118,7 +118,7 @@ jobs:
 
   skip-happo:
     needs: should_visual_test
-    if: ${{ needs.should_visual_test.outputs.result == false }}
+    if: ${{ needs.should_visual_test.outputs.result == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
