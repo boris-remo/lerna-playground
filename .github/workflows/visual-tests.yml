@@ -13,7 +13,7 @@ jobs:
     env:
       IS_MASTER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     outputs:
-      result: ${{ env.IS_MASTER == true || steps.determine_run.outputs.result }}
+      result: ${{ env.IS_MASTER == 'true' || steps.determine_run.outputs.result }}
     steps:
       - name: Print workflow parameters
         run: |
@@ -24,10 +24,10 @@ jobs:
           echo "github.ref: ${{ github.ref }}"
 
       - uses: actions/checkout@v2
-        if: ${{ env.IS_MASTER == false}}
+        if: ${{ env.IS_MASTER == 'false'}}
 
       - name: Check for client changes
-        if: ${{ env.IS_MASTER == false}}
+        if: ${{ env.IS_MASTER == 'false'}}
         id: detect_client_changes
         uses: dorny/paths-filter@v2
         with:
@@ -36,7 +36,7 @@ jobs:
               - 'client/**/*'
 
       - name: Check for required labels
-        if: ${{ env.IS_MASTER == false }}
+        if: ${{ env.IS_MASTER '== false' }}
         id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
@@ -44,7 +44,7 @@ jobs:
           any_of: qa-approved,ready-for-qa,force-visual-test
 
       - name: Determine happo run
-        if: ${{ env.IS_MASTER == false}}
+        if: ${{ env.IS_MASTER == 'false'}}
         uses: actions/github-script@v5
         id: determine_run
         with:
