@@ -11,12 +11,16 @@ jobs:
   should_visual_test:
     runs-on: ubuntu-latest
     env:
-      IS_MASTER: |
-        ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      IS_MASTER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     outputs:
-      result: |
-        ${{ env.IS_MASTER == true || steps.determine_run.outputs.result }}
+      result: ${{ env.IS_MASTER == true || steps.determine_run.outputs.result }}
     steps:
+      - name: Print workflow parameters
+        run: |
+          echo "env.IS_MASTER: {{ env.IS_MASTER }}"
+          echo "github.event_name: {{ github.event_name }}"
+          echo "github.ref: {{ github.ref }}"
+
       - uses: actions/checkout@v2
         if: ${{ env.IS_MASTER == false}}
 
