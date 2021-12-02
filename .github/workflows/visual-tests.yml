@@ -11,15 +11,17 @@ jobs:
   should_visual_test:
     runs-on: ubuntu-latest
     env:
-      IS_MASTER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      IS_MASTER: |
+        ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     outputs:
-      result: ${{ env.IS_MASTER == 'true' || steps.determine_run.outputs.result }}
+      result: |
+        ${{ env.IS_MASTER == true || steps.determine_run.outputs.result }}
     steps:
       - uses: actions/checkout@v2
-        if: ${{ env.IS_MASTER == 'false'}}
+        if: ${{ env.IS_MASTER == false}}
 
       - name: Check for client changes
-        if: ${{ env.IS_MASTER == 'false'}}
+        if: ${{ env.IS_MASTER == false}}
         id: detect_client_changes
         uses: dorny/paths-filter@v2
         with:
@@ -28,7 +30,7 @@ jobs:
               - 'client/**/*'
 
       - name: Check for required labels
-        if: ${{ github.event_name != 'issue_comment' && env.IS_MASTER == 'false' }}
+        if: ${{ env.IS_MASTER == false }}
         id: check-labels
         uses: docker://agilepathway/pull-request-label-checker:latest
         with:
@@ -36,23 +38,18 @@ jobs:
           any_of: qa-approved,ready-for-qa,force-visual-test
 
       - name: Determine happo run
-        if: ${{ env.IS_MASTER == 'false'}}
+        if: ${{ env.IS_MASTER == false}}
         uses: actions/github-script@v5
         id: determine_run
         with:
           result-encoding: string
           script: |
-            const isReadyForQa = Boolean(${{steps.detect_client_changes.outputs.client }} && '${{steps.check-labels.outcome }}' == 'success')
+            const isReadyForQa = ${{steps.detect_client_changes.outputs.client }} && '${{steps.check-labels.outcome }}' == 'success'
             return isReadyForQa
-  logs:
-    needs: should_visual_test
-    runs-on: ubuntu-latest
-    steps:
-      - run: ${{ needs.should_visual_test.outputs.result }}
 
   run-happo:
     needs: should_visual_test
-    if: ${{ needs.should_visual_test.outputs.result == 'true' }}
+    if: ${{ needs.should_visual_test.outputs.result == true }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -68,7 +65,8 @@ jobs:
             client/package-lock.json
 
       - name: Authenticate with GitHub package registry
-        run: echo "//npm.pkg.github.com/:_authToken=${{
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{
           secrets.PRIVATE_REPO_ACCESS_TOKEN }}" > ~/.npmrc
 
       - name: Install root dependencies
@@ -106,7 +104,7 @@ jobs:
 
   skip-happo:
     needs: should_visual_test
-    if: ${{ needs.should_visual_test.outputs.result == 'false' }}
+    if: ${{ needs.should_visual_test.outputs.result == false }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
