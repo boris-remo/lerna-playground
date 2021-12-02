@@ -13,7 +13,7 @@ jobs:
     env:
       IS_MASTER: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     outputs:
-      result: ${{ env.IS_MASTER || steps.determine_run.outputs.result }}
+      result: ${{ env.IS_MASTER == true || steps.determine_run.outputs.result }}
     steps:
       - name: Print workflow parameters
         run: |
@@ -50,16 +50,6 @@ jobs:
           script: |
             const isReadyForQa = ${{steps.detect_client_changes.outputs.client }} && '${{steps.check-labels.outcome }}' == 'success'
             return isReadyForQa
-
-  logs:
-    needs: should_visual_test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - run: |
-          echo ${{ needs.should_visual_test.outputs.result }}
-          echo ${{ needs.should_visual_test.outputs.result == 'true' }}
-          echo ${{ needs.should_visual_test.outputs.result == true }}
 
   run-happo:
     needs: should_visual_test
