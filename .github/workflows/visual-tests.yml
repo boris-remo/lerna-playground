@@ -18,6 +18,8 @@ jobs:
       - name: Print workflow parameters
         run: |
           echo "env.IS_MASTER: ${{ env.IS_MASTER }}"
+          echo "env.IS_MASTER true: ${{ env.IS_MASTER == true }}"
+          echo "env.IS_MASTER true: ${{ env.IS_MASTER == 'true' }}"
           echo "github.event_name: ${{ github.event_name }}"
           echo "github.ref: ${{ github.ref }}"
 
