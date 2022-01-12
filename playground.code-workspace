@@ -15,9 +15,25 @@
     {
       "name": "github",
       "path": ".github"
+    },
+    {
+      "name": "root",
+      "path": "."
     }
   ],
   "settings": {
-    "jest.disabledWorkspaceFolders": ["Documentation"]
+    "jest.disabledWorkspaceFolders": ["Documentation"],
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "**/coverage": true,
+      "**/node_modules": true,
+      ".github": true,
+      "docs": true
+    }
   }
 }
