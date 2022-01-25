@@ -7,7 +7,7 @@ on:
 jobs:
   automerge:
     runs-on: ubuntu-latest
-    if: github.event_name == 'ready_for_review'
+    if: github.event.action == 'ready_for_review'
     steps:
       - uses: alexwilson/enable-github-automerge-action@main
         with:
