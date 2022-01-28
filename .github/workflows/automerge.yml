@@ -1,20 +1,15 @@
 name: automerge
 on:
-  workflow_run:
-    workflows: ['Test']
-    types: [completed]
-    branches-ignore: ['master']
   pull_request:
-    types: [labeled, unlabeled]
+    types: [opened, ready_for_review, synchronize, labeled]
+  pull_request_review:
+    types: [submitted]
 jobs:
   automerge:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success'
+    if: github.event.pull_request.draft == false
     steps:
-      - uses: pascalgn/automerge-action@v0.14.3
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN }}
-          MERGE_LABELS: 'qa-approved, !DO NOT MERGE'
-          MERGE_DELETE_BRANCH: true
-          MERGE_METHOD: 'squash'
-          UPDATE_METHOD: 'merge'
+      - uses: alexwilson/enable-github-automerge-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: "SQUASH"

@@ -11,6 +11,10 @@
     {
       "name": "Documentation",
       "path": "docs"
+    },
+    {
+      "name": "github",
+      "path": ".github"
     }
   ],
   "settings": {

@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0.28",
   "workspaces": [
     "packages/a",
     "packages/b"
@@ -9,14 +9,16 @@
   "devDependencies": {
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.24.0",
-    "eslint-plugin-react": "^7.23.2"
+    "eslint-plugin-react": "^7.23.2",
+    "husky": "^7.0.0"
   },
   "scripts": {
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces",
     "build": "node build.js",
     "test:a": "jest --projects packages/a",
-    "test:b": "jest --projects packages/b"
+    "test:b": "jest --projects packages/b",
+    "prepare": "husky install"
   },
   "config": {
     "commitizen": {
