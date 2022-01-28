@@ -24,7 +24,7 @@ jobs:
 
   ready-for-qa:
     needs: qa-review
-    if: success() || needs.qa-review.outputs.is-ready == 'success'
+    if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions-ecosystem/action-add-labels@v1
@@ -40,7 +40,7 @@ jobs:
 
   not-ready-for-qa:
     needs: qa-review
-    if: failure() || needs.qa-review.outputs.is-ready == 'failure'
+    if: ${{ failure() }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Not ready for QA"
